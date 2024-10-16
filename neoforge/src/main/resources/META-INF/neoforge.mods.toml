@@ -15,7 +15,7 @@ https://www.curseforge.com/minecraft/mc-mods/bacterium
 Original mod by TeNNoX.
 http://tennoxmods.blogspot.com/p/bacteria-mod.html
 '''
-#logoFile = ""
+logoFile = "assets/bacterium/icon.png"
 
 [[dependencies.bacterium]]
 modId = "neoforge"
