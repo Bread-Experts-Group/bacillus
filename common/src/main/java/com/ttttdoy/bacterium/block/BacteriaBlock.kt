@@ -1,43 +1,53 @@
-package com.ttttdoy.bacterium.block;
+package com.ttttdoy.bacterium.block
 
-import com.mojang.serialization.MapCodec;
-import com.ttttdoy.bacterium.block.entity.BacteriaBlockEntity;
-import com.ttttdoy.bacterium.registry.ModBlockEntityTypes;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.mojang.serialization.MapCodec
+import com.ttttdoy.bacterium.block.entity.BacteriaBlockEntity
+import com.ttttdoy.bacterium.registry.ModBlockEntityTypes
+import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.BaseEntityBlock
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.RenderShape
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityTicker
+import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.BlockState
 
-public class BacteriaBlock extends BaseEntityBlock {
-    public static final MapCodec<BacteriaBlock> CODEC = simpleCodec(BacteriaBlock::new);
+class BacteriaBlock private constructor(properties : Properties) : BaseEntityBlock(properties) {
+    constructor() : this(Properties.ofFullCopy(Blocks.SPONGE).instabreak())
 
-    private BacteriaBlock(BlockBehaviour.Properties properties) { super(properties); }
+    override fun newBlockEntity(blockPos: BlockPos, blockState: BlockState) = BacteriaBlockEntity(blockPos, blockState)
 
-    public BacteriaBlock() {
-        this(BlockBehaviour.Properties.ofFullCopy(Blocks.SPONGE).instabreak());
+    override fun <T : BlockEntity> getTicker(
+        level: Level,
+        blockState: BlockState,
+        blockEntityType: BlockEntityType<T>
+    ): BlockEntityTicker<T>? =
+        if (level is ServerLevel) createTickerHelper<BacteriaBlockEntity, T>(
+            blockEntityType,
+            ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()
+        ) { level, pos, state, blockEntity -> blockEntity.tick(level as ServerLevel, pos) }
+        else null
+
+    override fun neighborChanged(
+        blockState: BlockState,
+        level: Level,
+        blockPos: BlockPos,
+        block: Block,
+        neighborPos: BlockPos,
+        moved: Boolean
+    ) {
+        if (level.hasNeighborSignal(blockPos)) level.getBlockEntity(blockPos)?.let {
+            if (it is BacteriaBlockEntity) it.active = 500
+        }
     }
 
-    @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new BacteriaBlockEntity(blockPos, blockState);
-    }
+    override fun codec(): MapCodec<out BaseEntityBlock> = CODEC
+    override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.MODEL
 
-    @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get(), BacteriaBlockEntity::tick);
+    companion object {
+        val CODEC: MapCodec<BacteriaBlock> = simpleCodec<BacteriaBlock> { properties -> BacteriaBlock(properties) }
     }
-
-    @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
-
-    @Override
-    protected @NotNull RenderShape getRenderShape(BlockState blockState) { return RenderShape.MODEL; }
 }

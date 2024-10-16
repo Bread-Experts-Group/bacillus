@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "bacterium:destroyer_starter"
+          "name": "bacterium:destroyer"
         }
       ],
       "conditions": [

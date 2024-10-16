@@ -1,51 +1,29 @@
-package com.ttttdoy.bacterium.registry;
+package com.ttttdoy.bacterium.registry
 
-import com.ttttdoy.bacterium.Bacterium;
-import com.ttttdoy.bacterium.block.BacteriaBlock;
-import com.ttttdoy.bacterium.block.DestroyerStarter;
-import com.ttttdoy.bacterium.block.MustBlock;
-import com.ttttdoy.bacterium.block.ReplacerStarter;
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
+import com.ttttdoy.bacterium.Bacterium
+import com.ttttdoy.bacterium.block.BacteriaBlock
+import com.ttttdoy.bacterium.block.MustBlock
+import dev.architectury.registry.registries.DeferredRegister
+import dev.architectury.registry.registries.RegistrySupplier
+import net.minecraft.core.registries.Registries
+import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.Item
+import net.minecraft.world.level.block.Block
+import java.util.function.Supplier
 
-import java.util.function.Supplier;
+@Suppress("unused")
+object ModBlocks {
+    val BLOCK_REGISTRY: DeferredRegister<Block> = DeferredRegister.create<Block>(Bacterium.MOD_ID, Registries.BLOCK)
 
-import static com.ttttdoy.bacterium.registry.ModItems.ITEM_REGISTRY;
+    val REPLACER: RegistrySupplier<BlockItem> = registerBlockItem<BacteriaBlock>("replacer", { BacteriaBlock() }, Item.Properties())
+    val DESTROYER: RegistrySupplier<BlockItem> = registerBlockItem<BacteriaBlock>("destroyer", { BacteriaBlock() }, Item.Properties())
 
-@SuppressWarnings("unused")
-public class ModBlocks {
-    public static final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(Bacterium.MOD_ID, Registries.BLOCK);
+    val MUST: RegistrySupplier<BlockItem> = registerBlockItem<MustBlock>("must", { MustBlock() }, Item.Properties())
 
-    public static final RegistrySupplier<Block> REPLACER = BLOCK_REGISTRY.register("replacer", BacteriaBlock::new);
-
-    public static final RegistrySupplier<BlockItem> REPLACER_STARTER = registerBlockItem(
-            "replacer_starter",
-            ReplacerStarter::new,
-            new Item.Properties()
-    );
-
-    public static final RegistrySupplier<Block> DESTROYER = BLOCK_REGISTRY.register("destroyer", BacteriaBlock::new);
-
-    public static final RegistrySupplier<BlockItem> DESTROYER_STARTER = registerBlockItem(
-            "destroyer_starter",
-            DestroyerStarter::new,
-            new Item.Properties()
-    );
-
-    public static final RegistrySupplier<BlockItem> MUST = registerBlockItem(
-            "must",
-            MustBlock::new,
-            new Item.Properties()
-    );
-
-    private static <T extends Block> RegistrySupplier<BlockItem> registerBlockItem (
-            String id, Supplier<T> block, Item.Properties properties
-    ) {
-        final RegistrySupplier<Block> blockSupplier = ModBlocks.BLOCK_REGISTRY.register(id, block);
-        return ITEM_REGISTRY.register(id, () -> new BlockItem(blockSupplier.get(), properties));
+    private fun <T : Block> registerBlockItem(
+        id: String, block: Supplier<T>, properties: Item.Properties
+    ): RegistrySupplier<BlockItem> {
+        val blockSupplier: RegistrySupplier<Block> = BLOCK_REGISTRY.register<Block>(id, block)
+        return ModItems.ITEM_REGISTRY.register<BlockItem>(id) { BlockItem(blockSupplier.get(), properties) }
     }
 }
