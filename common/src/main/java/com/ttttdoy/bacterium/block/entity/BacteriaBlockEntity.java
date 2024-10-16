@@ -6,10 +6,8 @@ import com.ttttdoy.bacterium.util.NeighborLists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
@@ -29,8 +27,8 @@ public class BacteriaBlockEntity extends BlockEntity {
     private long nextTick = 0;
     private boolean jammed = false;
 
-    public static final int MAXDELAY = 30;
-    public static final int MINDELAY = 10;
+    private static final int maxDelay = 30;
+    private static final int minDelay = 10;
     public static long jammedTick = 0;
 
     public BacteriaBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -38,10 +36,12 @@ public class BacteriaBlockEntity extends BlockEntity {
     }
 
     public static void replace(Level level, BlockPos pos, Set<Block> input, Block output) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof Container) {
-            Containers.dropContents(level, pos, (Container) blockEntity);
-            level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+        if (level.getBlockEntity(pos) != null) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof Container) {
+                Containers.dropContents(level, pos, (Container) blockEntity);
+                level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+            }
         }
 
         BlockState state = ModBlocks.REPLACER.get().defaultBlockState();
@@ -99,8 +99,8 @@ public class BacteriaBlockEntity extends BlockEntity {
 
     private long getNextTick() {
         if (level == null) return 0;
-        return level.getGameTime() + level.getRandom().nextInt(MAXDELAY) + MINDELAY;
+        return level.getGameTime() + level.getRandom().nextInt(maxDelay) + minDelay;
     }
 
-    public static void setJammed(Level level) { jammedTick = level.getGameTime() + MINDELAY; }
+    public static void setJammed(Level level) { jammedTick = level.getGameTime() + minDelay; }
 }

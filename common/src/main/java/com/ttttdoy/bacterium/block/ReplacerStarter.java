@@ -29,7 +29,7 @@ public class ReplacerStarter extends Block implements IStarter {
     public boolean activate(Level level, BlockPos pos) {
         BlockState input = level.getBlockState(pos.below());
         BlockState output = level.getBlockState(pos.above());
-        if ((output.getInteractionShape(level, pos.above()) == Shapes.block() ||
+        if ((output.getShape(level, pos.above()) == Shapes.block() ||
                 output.getBlock() == Blocks.WATER || output.getBlock() == Blocks.LAVA) &&
 
                 output.getBlock() != input.getBlock() && !output.is(ModBlockTags.unplaceable) &&

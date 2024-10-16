@@ -70,7 +70,7 @@ public class MustBlock extends Block implements BonemealableBlock {
 
     @Override
     protected void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
-        super.randomTick(blockState, serverLevel, blockPos, randomSource);
+        performBonemeal(serverLevel, randomSource, blockPos, blockState);
     }
 
     static {
