@@ -9,8 +9,8 @@ import net.minecraft.world.item.Item
 
 @Suppress("unused")
 object ModItems {
-    val ITEM_REGISTRY: DeferredRegister<Item> = DeferredRegister.create<Item?>(Bacterium.MOD_ID, Registries.ITEM)
+    val ITEM_REGISTRY: DeferredRegister<Item> = DeferredRegister.create(Bacterium.MOD_ID, Registries.ITEM)
 
-    val JAMMER: RegistrySupplier<Item> = ITEM_REGISTRY.register<Item?>("jammer") { Jammer() }
-    val COMPACTED_MUST: RegistrySupplier<Item> = ITEM_REGISTRY.register<Item>("compacted_must") { Item(Item.Properties()) }
+    val JAMMER: RegistrySupplier<Item> = ITEM_REGISTRY.register("jammer") { Jammer() }
+    val COMPACTED_MUST: RegistrySupplier<Item> = ITEM_REGISTRY.register("compacted_must") { Item(Item.Properties()) }
 }

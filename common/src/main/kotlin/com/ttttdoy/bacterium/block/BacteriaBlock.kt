@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 
-class BacteriaBlock private constructor(properties : Properties) : BaseEntityBlock(properties) {
-    constructor() : this(Properties.ofFullCopy(Blocks.SPONGE).instabreak())
+class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).instabreak()) {
+    val CODEC: MapCodec<BacteriaBlock> = simpleCodec { this }
 
     override fun newBlockEntity(blockPos: BlockPos, blockState: BlockState) = BacteriaBlockEntity(blockPos, blockState)
 
@@ -25,7 +25,7 @@ class BacteriaBlock private constructor(properties : Properties) : BaseEntityBlo
         blockState: BlockState,
         blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T>? =
-        if (level is ServerLevel) createTickerHelper<BacteriaBlockEntity, T>(
+        if (level is ServerLevel) createTickerHelper(
             blockEntityType,
             ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()
         ) { level, pos, state, blockEntity -> blockEntity.tick(level as ServerLevel, pos) }
@@ -46,8 +46,4 @@ class BacteriaBlock private constructor(properties : Properties) : BaseEntityBlo
 
     override fun codec(): MapCodec<out BaseEntityBlock> = CODEC
     override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.MODEL
-
-    companion object {
-        val CODEC: MapCodec<BacteriaBlock> = simpleCodec<BacteriaBlock> { properties -> BacteriaBlock(properties) }
-    }
 }
