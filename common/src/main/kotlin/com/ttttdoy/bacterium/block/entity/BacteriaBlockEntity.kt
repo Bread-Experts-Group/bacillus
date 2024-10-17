@@ -23,7 +23,7 @@ class BacteriaBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState
 ) : BlockEntity(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get(), blockPos, blockState) {
-    private var cached : Pair<Set<Block>, Block>? = null
+    var cached : Pair<Set<Block>, Block>? = null
     fun getIO(level: Level): Pair<Set<Block>, Block> {
         if (cached != null) return cached!!
         val output : Block
@@ -32,11 +32,10 @@ class BacteriaBlockEntity(
         val down = level.getBlockState(blockPos.below()).block
         if (blockState.block == ModBlocks.DESTROYER.get().block) {
             input = buildSet {
-                add(down)
-                var position = blockPos.above()
+                var position = blockPos.below()
                 do {
                     val state = level.getBlockState(position)
-                    if(state.isAir) break
+                    if (state.isAir) break
                     if (state.block != ModBlocks.DESTROYER.get().block) add(state.block)
                     position = position.above()
                 } while (true)
@@ -57,12 +56,11 @@ class BacteriaBlockEntity(
     var active = -1
 
     override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
-        level?.let { level ->
-            val io = getIO(level)
-            compoundTag.putString("inputs", io.first.joinToString("#") { BuiltInRegistries.BLOCK.getKey(it).toString() })
-            compoundTag.putString("outputs", BuiltInRegistries.BLOCK.getKey(io.second).toString())
-            compoundTag.putInt("active", active)
+        cached?.let {
+            compoundTag.putString("inputs", it.first.joinToString("#") { BuiltInRegistries.BLOCK.getKey(it).toString() })
+            compoundTag.putString("outputs", BuiltInRegistries.BLOCK.getKey(it.second).toString())
         }
+        compoundTag.putInt("active", active)
         super.saveAdditional(compoundTag, provider)
     }
 
@@ -89,22 +87,33 @@ class BacteriaBlockEntity(
 
         level.setBlockAndUpdate(pos, germinationState)
         val newBacteria = BacteriaBlockEntity(pos, germinationState)
-        newBacteria.cached = getIO(level)
+        newBacteria.cached = cached
         newBacteria.active = level.random.nextInt(0, active + level.random.nextInt(0, 10))
         level.setBlockEntity(newBacteria)
         level.playSound(null, pos, SoundEvents.CHORUS_FLOWER_GROW, SoundSource.BLOCKS, 0.8f, 1f)
     }
 
+    /**
+     * Grace counter for the bacteria to spread.
+     * If bacteria can't spread within this time, it will decay.
+     * Measured in Minecraft game ticks.
+     * @author Miko Elbrecht
+     * @since 1.0.0
+     */
+    var grace = 20 * 3
     fun tick(level: ServerLevel, pos: BlockPos) {
-        if (level.random.nextInt(1, 10) > 2) return
-        if ((active == -1 || globalJamState) && !globalKillState) return
-        val io = getIO(level)
+        cached?.let {
+            if (level.random.nextInt(1, 10) > 2) return
+            if ((active == -1 || globalJamState) && !globalKillState) return
 
-        val next = NeighborLists.getNextPositionFiltered(level, pos, io.first)
-        if (active > 0 && next != null && !globalKillState) replace(level, next)
-        else {
-            level.setBlockAndUpdate(pos, io.second.defaultBlockState())
-            setRemoved()
+            val next = NeighborLists.getNextPositionFiltered(level, pos, it.first)
+            if (active > 0 && next != null && !globalKillState) {
+                replace(level, next)
+                grace = -1
+            } else if (grace == -1 || globalKillState) {
+                level.setBlockAndUpdate(pos, it.second.defaultBlockState())
+                setRemoved()
+            } else grace--
         }
     }
 
