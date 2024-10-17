@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " M ",
+    "MRM",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "item": "bacillus:compacted_must"
+    },
+    "R": {
+      "item": "minecraft:tnt"
+    }
+  },
+  "result": {
+    "item": "bacillus:destroyer"
+  }
+}

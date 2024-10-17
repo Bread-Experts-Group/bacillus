@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "bacterium",
+  "id": "bacillus",
   "version": "${version}",
-  "name": "bacterium",
+  "name": "Bacillus",
   "description": "Port of the Bacterium mod for 1.20.1 \n https://www.curseforge.com/minecraft/mc-mods/bacterium",
   "authors": [
     ""
@@ -11,14 +11,14 @@
     "homepage": ""
   },
   "license": "LGPL-2.1",
-  "icon": "assets/bacterium/icon.png",
+  "icon": "assets/bacillus/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.ttttdoy.bacterium.fabric.BacteriumFabric"
+      "com.ttttdoy.bacillus.fabric.BacillusFabric"
     ],
     "client": [
-      "com.ttttdoy.bacterium.fabric.client.BacteriumFabricClient"
+      "com.ttttdoy.bacillus.fabric.client.BacillusFabricClient"
     ]
   },
   "depends": {

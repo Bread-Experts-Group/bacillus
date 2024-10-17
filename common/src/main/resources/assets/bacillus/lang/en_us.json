@@ -1,0 +1,8 @@
+{
+  "block.bacillus.replacer": "Replacer Bacteria",
+  "block.bacillus.destroyer": "Destroyer Bacteria",
+  "block.bacillus.must": "Must",
+  "item.bacillus.jammer": "Bacteria Jammer",
+  "item.bacillus.compacted_must": "Compacted Must",
+  "bacillus.itemGroup": "Bacillus"
+}

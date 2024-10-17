@@ -1,37 +1,37 @@
-modLoader = "javafml"
+modLoader = "kotlinforforge"
 loaderVersion = "[2,)"
 #issueTrackerURL = ""
 license = "GNU LGPL 2.1"
 
 [[mods]]
-modId = "bacterium"
+modId = "bacillus"
 version = "${version}"
-displayName = "bacterium"
+displayName = "Bacillus"
 authors = ""
 description = '''
-Port of the Bacterium mod for 1.20.1 by InEqualMeasure.
+Textures from the Bacterium mod for 1.20.1 by InEqualMeasure.
 https://www.curseforge.com/minecraft/mc-mods/bacterium
 
-Original mod by TeNNoX.
+Original Bacteria mod by TeNNoX.
 http://tennoxmods.blogspot.com/p/bacteria-mod.html
 '''
-logoFile = "assets/bacterium/icon.png"
+logoFile = "../assets/bacillus/icon.png"
 
-[[dependencies.bacterium]]
+[[dependencies.bacillus]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.bacterium]]
+[[dependencies.bacillus]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.bacterium]]
+[[dependencies.bacillus]]
 modId = "architectury"
 type = "required"
 versionRange = "[13.0.6,)"
