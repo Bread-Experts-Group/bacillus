@@ -29,8 +29,10 @@ class BacteriaBlockEntity(
         val output : Block
         val input : Set<Block>
 
+        val down = level.getBlockState(blockPos.below()).block
         if (blockState.block == ModBlocks.DESTROYER.get().block) {
             input = buildSet {
+                add(down)
                 var position = blockPos.above()
                 do {
                     val state = level.getBlockState(position)
@@ -41,7 +43,7 @@ class BacteriaBlockEntity(
             }
             output = Blocks.AIR
         } else {
-            input = setOf(level.getBlockState(blockPos.below()).block)
+            input = setOf(down)
             output = level.getBlockState(blockPos.above()).block
         }
 
@@ -94,11 +96,11 @@ class BacteriaBlockEntity(
     }
 
     fun tick(level: ServerLevel, pos: BlockPos) {
-        if (level.random.nextInt(1, 10) > 6) return
+        if (level.random.nextInt(1, 10) > 2) return
         if ((active == -1 || globalJamState) && !globalKillState) return
         val io = getIO(level)
 
-        val next = NeighborLists.getNextPositionFiltered(level, pos, io.first, level.random)
+        val next = NeighborLists.getNextPositionFiltered(level, pos, io.first)
         if (active > 0 && next != null && !globalKillState) replace(level, next)
         else {
             level.setBlockAndUpdate(pos, io.second.defaultBlockState())

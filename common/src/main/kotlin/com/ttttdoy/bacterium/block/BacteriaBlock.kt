@@ -54,9 +54,9 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
             val myBlock = blockState.block
             println(myBlock)
             if (
-                (it is BacteriaBlockEntity && !up.isAir && !down.isAir) &&
+                (it is BacteriaBlockEntity && !down.isAir) &&
                 (
-                        (myBlock == ModBlocks.REPLACER.get().block && up.block != ModBlocks.REPLACER.get().block) ||
+                        (!up.isAir && myBlock == ModBlocks.REPLACER.get().block && up.block != ModBlocks.REPLACER.get().block) ||
                         (myBlock == ModBlocks.DESTROYER.get().block && down.block != ModBlocks.DESTROYER.get().block)
                 )
             ) {
