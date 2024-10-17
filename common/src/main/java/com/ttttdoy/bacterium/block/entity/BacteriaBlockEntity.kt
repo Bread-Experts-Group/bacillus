@@ -24,17 +24,27 @@ class BacteriaBlockEntity(
     blockState: BlockState
 ) : BlockEntity(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get(), blockPos, blockState) {
     private var cached : Pair<Set<Block>, Block>? = null
-    private fun getIO(level: Level): Pair<Set<Block>, Block> {
+    fun getIO(level: Level): Pair<Set<Block>, Block> {
         if (cached != null) return cached!!
-        val input = if (blockState.block == ModBlocks.DESTROYER.get().block) buildSet {
-            var position = blockPos.above()
-            do {
-                val state = level.getBlockState(position)
-                if (!state.isAir) add(state.block)
-                position = position.above()
-            } while (!state.isAir)
-        } else setOf(level.getBlockState(blockPos.below()).block)
-        val output = if (blockState.block == ModBlocks.DESTROYER.get().block) Blocks.AIR else level.getBlockState(blockPos.above()).block
+        val output : Block
+        val input : Set<Block>
+
+        if (blockState.block == ModBlocks.DESTROYER.get().block) {
+            input = buildSet {
+                var position = blockPos.above()
+                do {
+                    val state = level.getBlockState(position)
+                    if(state.isAir) break
+                    if (state.block != ModBlocks.DESTROYER.get().block) add(state.block)
+                    position = position.above()
+                } while (true)
+            }
+            output = Blocks.AIR
+        } else {
+            input = setOf(level.getBlockState(blockPos.below()).block)
+            output = level.getBlockState(blockPos.above()).block
+        }
+
         cached = input to output
         return cached!!
     }
@@ -73,20 +83,26 @@ class BacteriaBlockEntity(
         level.setBlockAndUpdate(pos, germinationState)
         val newBacteria = BacteriaBlockEntity(pos, germinationState)
         newBacteria.cached = getIO(level)
-        newBacteria.active = level.random.nextInt(0, active)
+        newBacteria.active = level.random.nextInt(0, active + level.random.nextInt(0, 10))
         level.setBlockEntity(newBacteria)
         level.playSound(null, pos, SoundEvents.CHORUS_FLOWER_GROW, SoundSource.BLOCKS, 0.8f, 1f)
     }
 
     fun tick(level: ServerLevel, pos: BlockPos) {
-        if (active == -1) return
+        if (level.random.nextInt(1, 10) > 6) return
+        if ((active == -1 || globalJamState) && !globalKillState) return
         val io = getIO(level)
 
         val next = NeighborLists.getNextPositionFiltered(level, pos, io.first, level.random)
-        if (active > 0 && next != null) replace(level, next)
+        if (active > 0 && next != null && !globalKillState) replace(level, next)
         else {
             level.setBlockAndUpdate(pos, io.second.defaultBlockState())
             setRemoved()
         }
+    }
+
+    companion object {
+        var globalJamState = false
+        var globalKillState = false
     }
 }

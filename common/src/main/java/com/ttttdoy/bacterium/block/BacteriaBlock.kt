@@ -3,6 +3,7 @@ package com.ttttdoy.bacterium.block
 import com.mojang.serialization.MapCodec
 import com.ttttdoy.bacterium.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacterium.registry.ModBlockEntityTypes
+import com.ttttdoy.bacterium.registry.ModBlocks
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
@@ -40,7 +41,20 @@ class BacteriaBlock private constructor(properties : Properties) : BaseEntityBlo
         moved: Boolean
     ) {
         if (level.hasNeighborSignal(blockPos)) level.getBlockEntity(blockPos)?.let {
-            if (it is BacteriaBlockEntity) it.active = 500
+            val up = level.getBlockState(blockPos.above())
+            val down = level.getBlockState(blockPos.below())
+            val myBlock = blockState.block
+            println(myBlock)
+            if (
+                (it is BacteriaBlockEntity && !up.isAir && !down.isAir) &&
+                (
+                        (myBlock == ModBlocks.REPLACER.get().block && up.block != ModBlocks.REPLACER.get().block) ||
+                        (myBlock == ModBlocks.DESTROYER.get().block && down.block != ModBlocks.DESTROYER.get().block)
+                )
+            ) {
+                it.getIO(level)
+                it.active = 500
+            }
         }
     }
 
