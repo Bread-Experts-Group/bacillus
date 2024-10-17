@@ -35,12 +35,12 @@ class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE)), BonemealableBlock
         blockState: BlockState
     ) {
         val i = blockState.getValue<Int>(AGE) + randomSource.nextInt(3) + 1
-        if (i < 16) serverLevel.setBlockAndUpdate(blockPos, blockState.setValue<Int, Int>(AGE, i))
+        if (i < 16) serverLevel.setBlockAndUpdate(blockPos, blockState.setValue(AGE, i))
         if (randomSource.nextInt(8) + 8 < i) {
             val next = NeighborLists.getNextPositionFiltered(serverLevel, blockPos, filter)
             if (next != null) {
                 serverLevel.setBlockAndUpdate(next, this.defaultBlockState())
-                serverLevel.setBlockAndUpdate(blockPos, blockState.setValue<Int, Int>(AGE, randomSource.nextInt(10)))
+                serverLevel.setBlockAndUpdate(blockPos, blockState.setValue(AGE, randomSource.nextInt(10)))
             }
         }
     }
@@ -50,7 +50,7 @@ class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE)), BonemealableBlock
         performBonemeal(serverLevel, randomSource, blockPos, blockState)
 
     init {
-        this.registerDefaultState(this.getStateDefinition().any().setValue<Int, Int>(AGE, 0))
+        this.registerDefaultState(this.getStateDefinition().any().setValue(AGE, 0))
     }
 
     companion object {
