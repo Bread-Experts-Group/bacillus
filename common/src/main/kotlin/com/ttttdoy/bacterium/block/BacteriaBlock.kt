@@ -4,9 +4,6 @@ import com.mojang.serialization.MapCodec
 import com.ttttdoy.bacterium.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacterium.registry.ModBlockEntityTypes
 import com.ttttdoy.bacterium.registry.ModBlocks
-import dev.architectury.platform.Platform
-import dev.architectury.utils.Env
-import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
@@ -18,8 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
-import java.awt.Color
-import kotlin.random.Random
 
 /**
  * ### Main bacteria block class for the destroyer and replacer.
@@ -73,16 +68,4 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
 
     override fun codec(): MapCodec<out BaseEntityBlock> = codec
     override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.MODEL
-
-    companion object {
-        init {
-            if (Platform.getEnvironment() == Env.CLIENT) {
-                val minecraft = Minecraft.getInstance()
-                minecraft.blockColors.register(
-                    { blockState, level, blockPos, index -> Color(Random(204).nextInt(1, 255), 0, 0).rgb },
-                    ModBlocks.DESTROYER.get().block, ModBlocks.REPLACER.get().block
-                )
-            }
-        }
-    }
 }
