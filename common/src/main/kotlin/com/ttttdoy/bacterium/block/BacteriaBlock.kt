@@ -16,6 +16,14 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 
+/**
+ * ### Main bacteria block class for the destroyer and replacer.
+ *
+ * - Replacer: Place any full block on top of the replacer, and it will convert the block type below it to whatever was placed on top.
+ * - Destroyer: Place a set of blocks above the destroyer, then it will spread and consume those blocks.
+ * - The bacteria has a 3x3x3 block reach. If it runs out of valid blocks within range, it will disappear.
+ * - The bacteria has a limited range, controlled by [BacteriaBlockEntity.active]. Once it reaches 0 the bacteria will no longer spread.
+ */
 class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).instabreak()) {
     val CODEC: MapCodec<BacteriaBlock> = simpleCodec { this }
 

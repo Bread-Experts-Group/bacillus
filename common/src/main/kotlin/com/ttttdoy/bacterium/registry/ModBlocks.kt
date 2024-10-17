@@ -15,9 +15,18 @@ import java.util.function.Supplier
 object ModBlocks {
     val BLOCK_REGISTRY: DeferredRegister<Block> = DeferredRegister.create(Bacterium.MOD_ID, Registries.BLOCK)
 
+    /**
+     * @see BacteriaBlock
+     */
     val REPLACER: RegistrySupplier<BlockItem> = registerBlockItem("replacer", { BacteriaBlock() }, Item.Properties())
+    /**
+     * @see BacteriaBlock
+     */
     val DESTROYER: RegistrySupplier<BlockItem> = registerBlockItem("destroyer", { BacteriaBlock() }, Item.Properties())
 
+    /**
+     * @see MustBlock
+     */
     val MUST: RegistrySupplier<BlockItem> = registerBlockItem("must", { MustBlock() }, Item.Properties())
 
     private fun <T : Block> registerBlockItem(

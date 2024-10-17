@@ -15,7 +15,7 @@ object ModCreativeTab {
         CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
             .title(Component.translatable(Bacterium.MOD_ID + ".itemGroup"))
             .icon { ModBlocks.DESTROYER.get().asItem().defaultInstance }
-            .displayItems { itemDisplayParameters, output ->
+            .displayItems { _, output ->
                 ModItems.ITEM_REGISTRY.forEach { itemSupplier -> output.accept(itemSupplier.get()) }
             }.build()
     }

@@ -9,6 +9,12 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 
+/**
+ * Used in "pausing" and "killing" bacteria in the world.
+ *
+ * - When held in main hand: pauses active bacteria
+ * - When held in off-hand: kills nearby bacteria
+ */
 class Jammer : Item(Properties()) {
     override fun use(level: Level, player: Player, interactionHand: InteractionHand): InteractionResultHolder<ItemStack> {
         if (level.isClientSide) return InteractionResultHolder.pass(player.getItemInHand(interactionHand))

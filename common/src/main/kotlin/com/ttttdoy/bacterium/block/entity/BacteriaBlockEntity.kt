@@ -49,13 +49,17 @@ class BacteriaBlockEntity(
         return cached!!
     }
 
+    /**
+     * Dictates how long the bacteria lasts for before disappearing.
+     */
     var active = -1
 
     override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
-        level?.let {
-            val io = getIO(it)
+        level?.let { level ->
+            val io = getIO(level)
             compoundTag.putString("inputs", io.first.joinToString("#") { BuiltInRegistries.BLOCK.getKey(it).toString() })
             compoundTag.putString("outputs", BuiltInRegistries.BLOCK.getKey(io.second).toString())
+            compoundTag.putInt("active", active)
         }
         super.saveAdditional(compoundTag, provider)
     }
@@ -64,6 +68,7 @@ class BacteriaBlockEntity(
         val input = compoundTag.getString("inputs").split("#").map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)) }.toSet()
         val output = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundTag.getString("outputs")))
         cached = input to output
+        active = compoundTag.getInt("active")
         super.loadAdditional(compoundTag, provider)
     }
 
