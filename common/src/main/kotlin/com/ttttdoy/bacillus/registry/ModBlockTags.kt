@@ -7,11 +7,20 @@ import net.minecraft.tags.TagKey
 
 object ModBlockTags {
     /**
-     * Marks blocks as unbreakable to destroyer/replacer bacteria
+     * Blocks that can't be filtered for in bacteria (replacer/destroyer).
+     * @since 1.0.0
      */
-    val UNBREAKABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Bacillus.MOD_ID, "unbreakable"))
+    val UNFILTERABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Bacillus.MOD_ID, "unfilterable"))
+
     /**
-     * Marks blocks as unreplaceable to replacer bacteria.
+     * Blocks that can't be replaced by replacer bacteria.
+     * @since 1.0.0
      */
     val UNREPLACEABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Bacillus.MOD_ID, "unreplaceable"))
+
+    /**
+     * Blocks that can't be destroyed by destroyer bacteria.
+     * @since 1.0.0
+     */
+    val UNREMOVABLE = TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(Bacillus.MOD_ID, "unremovable"))
 }

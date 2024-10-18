@@ -26,7 +26,7 @@ class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE)), BonemealableBlock
         randomSource: RandomSource,
         blockPos: BlockPos,
         blockState: BlockState
-    ): Boolean = NeighborLists.getNextPositionFiltered(level, blockPos, filter) != null
+    ): Boolean = NeighborLists.getNextPositionFiltered(level, blockState.block, blockPos, filter, null) != null
 
     override fun performBonemeal(
         serverLevel: ServerLevel,
@@ -37,7 +37,7 @@ class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE)), BonemealableBlock
         val i = blockState.getValue<Int>(AGE) + randomSource.nextInt(3) + 1
         if (i < 16) serverLevel.setBlockAndUpdate(blockPos, blockState.setValue(AGE, i))
         if (randomSource.nextInt(8) + 8 < i) {
-            val next = NeighborLists.getNextPositionFiltered(serverLevel, blockPos, filter)
+            val next = NeighborLists.getNextPositionFiltered(serverLevel, blockState.block, blockPos, filter, null)
             if (next != null) {
                 serverLevel.setBlockAndUpdate(next, this.defaultBlockState())
                 serverLevel.setBlockAndUpdate(blockPos, blockState.setValue(AGE, randomSource.nextInt(10)))
