@@ -9,6 +9,7 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.state.BlockBehaviour
 import java.util.function.Supplier
 
 @Suppress("unused")
@@ -23,6 +24,13 @@ object ModBlocks {
      * @see BacteriaBlock
      */
     val DESTROYER: RegistrySupplier<BlockItem> = registerBlockItem("destroyer", { BacteriaBlock() }, Item.Properties())
+
+    // todo textures.
+    /**
+     * Activating a destroyer block with this above it marks every block in the game as destroyable.
+     * - Excludes: Bacteria, Air, blocks in the unreplaceable and/or unbreakable tag.
+     */
+    val EVERYTHING: RegistrySupplier<BlockItem> = registerBlockItem("everything", { Block(BlockBehaviour.Properties.of()) }, Item.Properties())
 
     /**
      * @see MustBlock

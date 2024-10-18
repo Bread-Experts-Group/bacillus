@@ -5,11 +5,9 @@ import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import com.ttttdoy.bacillus.registry.ModBlocks
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.BaseEntityBlock
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
@@ -55,26 +53,26 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         neighborPos: BlockPos,
         moved: Boolean
     ) {
-        if (level.hasNeighborSignal(blockPos)) level.getBlockEntity(blockPos)?.let {
+        if (level.hasNeighborSignal(blockPos)) level.getBlockEntity(blockPos)?.let { entity ->
             val up = level.getBlockState(blockPos.above())
             val down = level.getBlockState(blockPos.below())
             val myBlock = blockState.block
             println(myBlock)
             if (
-                (it is BacteriaBlockEntity && !down.isAir) &&
+                (entity is BacteriaBlockEntity && !down.isAir) &&
                 (
                         (!up.isAir && myBlock == ModBlocks.REPLACER.get().block && up.block != ModBlocks.REPLACER.get().block) ||
                         (myBlock == ModBlocks.DESTROYER.get().block && down.block != ModBlocks.DESTROYER.get().block)
                 )
             ) {
-                it.getIO(level)
-                it.active = 500
+                entity.getIO(level)
+                entity.active = 500
             }
         }
     }
 
     override fun codec(): MapCodec<out BaseEntityBlock> = codec
-    override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.INVISIBLE
+    override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.MODEL
     override fun hasDynamicShape(): Boolean = true
 
     // todo IT NOT WORK

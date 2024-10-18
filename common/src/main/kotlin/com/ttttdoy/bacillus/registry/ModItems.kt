@@ -11,6 +11,9 @@ import net.minecraft.world.item.Item
 object ModItems {
     val ITEM_REGISTRY: DeferredRegister<Item> = DeferredRegister.create(Bacillus.MOD_ID, Registries.ITEM)
 
+    // helper book goes here
+    // remote goes here
+
     val JAMMER: RegistrySupplier<Item> = ITEM_REGISTRY.register("jammer") { Jammer() }
     val COMPACTED_MUST: RegistrySupplier<Item> = ITEM_REGISTRY.register("compacted_must") { Item(Item.Properties()) }
 }

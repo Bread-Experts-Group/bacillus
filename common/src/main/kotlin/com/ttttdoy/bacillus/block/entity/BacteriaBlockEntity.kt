@@ -1,6 +1,7 @@
 package com.ttttdoy.bacillus.block.entity
 
 import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
+import com.ttttdoy.bacillus.registry.ModBlockTags
 import com.ttttdoy.bacillus.registry.ModBlocks
 import com.ttttdoy.bacillus.util.NeighborLists
 import net.minecraft.core.BlockPos
@@ -22,8 +23,6 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.shapes.VoxelShape
-import org.apache.logging.log4j.LogManager
-import kotlin.math.log
 
 class BacteriaBlockEntity(
     blockPos: BlockPos,
@@ -45,13 +44,18 @@ class BacteriaBlockEntity(
                 var position = blockPos.below()
                 do {
                     val state = level.getBlockState(position)
-                    if (state.isAir) break
+                    // todo check to make sure adding the unbreakable check doesn't break the logic
+                    if (state.isAir || state.`is`(ModBlockTags.UNBREAKABLE)) break
                     if (state.block != ModBlocks.DESTROYER.get().block) add(state.block)
+                    if (state.block == ModBlocks.EVERYTHING.get().block) BuiltInRegistries.BLOCK.filter {
+                        it != Blocks.AIR && it != ModBlocks.DESTROYER.get().block && it != ModBlocks.EVERYTHING.get().block
+                    }.forEach { block: Block -> add(block) }
                     position = position.above()
                 } while (true)
             }
             output = Blocks.AIR
         } else {
+            // todo unreplaceable check here
             input = setOf(down)
             output = level.getBlockState(blockPos.above()).block
         }
@@ -68,6 +72,8 @@ class BacteriaBlockEntity(
 
     /**
      * Dictates how long the bacteria lasts for before disappearing.
+     * // todo rewrite this
+     * uhh can last forever something something
      */
     var active = -1
 
@@ -106,10 +112,16 @@ class BacteriaBlockEntity(
         level.setBlockAndUpdate(pos, germinationState)
         val newBacteria = BacteriaBlockEntity(pos, germinationState)
         newBacteria.cached = cached
-        newBacteria.active = level.random.nextInt(0, active + level.random.nextInt(0, 10))
+        newBacteria.active = level.random.nextInt(0, active + level.random.nextInt(0, 10))/* active--*/
         level.setBlockEntity(newBacteria)
         level.playSound(null, pos, SoundEvents.CHORUS_FLOWER_GROW, SoundSource.BLOCKS, 0.8f, 1f)
     }
+
+    /**
+     * Controls how often the block ticks, based on random chance.
+     * Lower numbers will result in the block ticking more often, higher is less often.
+     */
+    val tickChance = 40
 
     /**
      * Grace counter for the bacteria to spread.
@@ -118,18 +130,19 @@ class BacteriaBlockEntity(
      * @author Miko Elbrecht
      * @since 1.0.0
      */
-    var grace = (20 * 2.5).toInt()
+    var grace = (/*20 * 2.5*/ 5).toInt()
     fun tick(level: ServerLevel, pos: BlockPos) {
         cached?.let {
-            if (level.random.nextInt(1, 10) > 2) return
             if ((active == -1 || globalJamState) && !globalKillState) return
 
             val next = NeighborLists.getNextPositionFiltered(level, pos, it.first)
             if (active > 0 && next != null && !globalKillState) {
+                if (level.random.nextInt(1, tickChance) != 1) return
                 consumingBlockData = Triple(level.getBlockState(next), next, level.getBlockState(next).getCollisionShape(level, next))
                 replace(level, next)
                 grace = -1
             } else if (grace == -1 || globalKillState) {
+                // todo probably move this out of the random chance ticking
                 level.setBlockAndUpdate(pos, it.second.defaultBlockState())
                 setRemoved()
             } else grace--
