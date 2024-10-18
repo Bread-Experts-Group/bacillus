@@ -21,6 +21,9 @@
       "com.ttttdoy.bacillus.fabric.client.BacillusFabricClient"
     ]
   },
+  "mixins": [
+    "bacillus.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.16.7",
     "minecraft": "~1.21.1",

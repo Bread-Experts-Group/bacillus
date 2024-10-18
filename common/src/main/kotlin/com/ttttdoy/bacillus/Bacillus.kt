@@ -1,7 +1,10 @@
 package com.ttttdoy.bacillus
 
+import com.ttttdoy.bacillus.client.render.BacteriaBlockRenderer
+import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import com.ttttdoy.bacillus.registry.Registry
 import dev.architectury.event.events.common.LifecycleEvent
+import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry
 
 /**
  * Main common side mod object.
@@ -21,7 +24,7 @@ object Bacillus {
     @JvmStatic
     fun initClient() {
         LifecycleEvent.SETUP.register {
-//            BlockEntityRendererRegistry.register(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()) { ctx -> BacteriaBlockRenderer(ctx) }
+            BlockEntityRendererRegistry.register(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()) { ctx -> BacteriaBlockRenderer(ctx) }
         }
     }
 }

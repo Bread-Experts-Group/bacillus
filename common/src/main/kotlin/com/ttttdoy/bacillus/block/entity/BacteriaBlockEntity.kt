@@ -4,6 +4,7 @@ import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import com.ttttdoy.bacillus.registry.ModBlockTags
 import com.ttttdoy.bacillus.registry.ModBlocks
 import com.ttttdoy.bacillus.util.NeighborLists
+import net.minecraft.client.color.item.ItemColor
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
