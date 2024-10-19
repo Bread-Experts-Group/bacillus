@@ -1,3 +1,4 @@
+//file:noinspection GrDeprecatedAPIUsage
 plugins {
     id 'com.github.johnrengelman.shadow'
 }
@@ -6,6 +7,15 @@ architectury {
     platformSetupLoomIde()
     neoForge()
 }
+
+//loom {
+//    runs {
+//        client {
+//            client()
+//            programArgs.addAll((String[]) ['--username', 'PizzaTime65', '--uuid', '30cdf636-82ed-47ee-9a9c-4d820c0d76a9'])
+//        }
+//    }
+//}
 
 configurations {
     common {
@@ -34,13 +44,22 @@ repositories {
         name = 'NeoForged'
         url = 'https://maven.neoforged.net/releases'
     }
+
+    maven { url 'https://maven.blamejared.com' }
 }
 
 dependencies {
-    neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
+    neoForge "net.neoforged:neoforge:${neoforge_version}"
 
-    modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
-    implementation "thedarkcolour:kotlinforforge-neoforge:5.5.0" exclude group: 'net.neoforged.fancymodloader', module: 'loader'
+    runtimeOnly "vazkii.patchouli:Patchouli:${patchouli_version}-NEOFORGE"
+
+    modImplementation "dev.architectury:architectury-neoforge:${architectury_api_version}"
+    implementation "thedarkcolour:kotlinforforge-neoforge:${kff_version}" exclude group: 'net.neoforged.fancymodloader', module: 'loader'
+
+    // compile against the JEI API but do not include it at runtime
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    // at runtime, use the full JEI jar for NeoForge
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

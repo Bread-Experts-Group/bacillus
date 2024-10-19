@@ -1,10 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "R M",
-    "IRI",
-    "III"
-  ],
+  "category": "misc",
   "key": {
     "R": {
       "item": "minecraft:redstone"
@@ -16,7 +12,13 @@
       "item": "minecraft:iron_ingot"
     }
   },
+  "pattern": [
+    "R M",
+    "IRI",
+    "III"
+  ],
   "result": {
-    "item": "bacillus:jammer"
+    "count": 1,
+    "id": "bacillus:jammer"
   }
 }

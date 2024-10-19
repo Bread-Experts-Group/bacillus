@@ -1,10 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " M ",
-    "MRM",
-    " M "
-  ],
+  "category": "misc",
   "key": {
     "M": {
       "item": "bacillus:compacted_must"
@@ -13,7 +9,13 @@
       "item": "minecraft:dispenser"
     }
   },
+  "pattern": [
+    " M ",
+    "MRM",
+    " M "
+  ],
   "result": {
-    "item": "bacillus:replacer"
+    "count": 1,
+    "id": "bacillus:replacer"
   }
 }

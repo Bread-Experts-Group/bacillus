@@ -23,6 +23,10 @@ subprojects {
         archivesName = "$rootProject.archives_name-$project.name"
     }
 
+    loom {
+        silentMojangMappingsLicense()
+    }
+
     repositories {
         // Add repositories to retrieve artifacts from in here.
         // You should only use this when depending on other mods because
@@ -34,10 +38,20 @@ subprojects {
             name = 'ParchmentMC'
             url = 'https://maven.parchmentmc.org'
         }
+        maven {
+            // location of the maven that hosts JEI files since January 2023
+            name = "Jared's maven"
+            url = "https://maven.blamejared.com/"
+        }
+        maven {
+            // location of a maven mirror for JEI files, as a fallback
+            name = "ModMaven"
+            url = "https://modmaven.dev"
+        }
     }
 
     dependencies {
-        minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+        minecraft "net.minecraft:minecraft:${minecraft_version}"
         mappings loom.layered() {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-1.21:2024.07.28@zip")

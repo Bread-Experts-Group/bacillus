@@ -1,10 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "BBB",
-    "BSB",
-    "BBB"
-  ],
+  "category": "misc",
   "key": {
     "B": {
       "item": "minecraft:bread"
@@ -13,7 +9,13 @@
       "item": "minecraft:sponge"
     }
   },
+  "pattern": [
+    "BBB",
+    "BSB",
+    "BBB"
+  ],
   "result": {
-    "item": "bacillus:must"
+    "count": 1,
+    "id": "bacillus:must"
   }
 }

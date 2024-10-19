@@ -4,7 +4,6 @@ import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import com.ttttdoy.bacillus.registry.ModBlockTags
 import com.ttttdoy.bacillus.registry.ModBlocks
 import com.ttttdoy.bacillus.util.NeighborLists
-import net.minecraft.client.color.item.ItemColor
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
@@ -23,7 +22,6 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import net.minecraft.world.phys.shapes.VoxelShape
 import org.apache.logging.log4j.LogManager
 
 class BacteriaBlockEntity(
