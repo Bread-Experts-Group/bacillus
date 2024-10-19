@@ -3,9 +3,10 @@
   "id": "bacillus",
   "version": "${version}",
   "name": "Bacillus",
-  "description": "Port of the Bacterium mod for 1.20.1 \n https://www.curseforge.com/minecraft/mc-mods/bacterium",
+  "description": "A rewrite of the original Bacteria mod by TeNNoX. \n http://tennoxmods.blogspot.com/p/bacteria-mod.html \n Textures from the Bacterium mod for 1.20.1 by InEqualMeasure. \n https://www.curseforge.com/minecraft/mc-mods/bacterium",
   "authors": [
-    ""
+    "Logan Mclean (ttttdoy)",
+    "Miko Elbrecht (ATPStorages)"
   ],
   "contact": {
     "homepage": ""
@@ -26,7 +27,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.16.7",
-    "minecraft": "~1.21.1",
+    "minecraft": ">=1.21",
     "java": ">=21",
     "architectury": ">=13.0.6",
     "fabric-api": "*",
