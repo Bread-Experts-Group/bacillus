@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level
 /**
  * Used in "pausing" and "killing" bacteria in the world.
  *
- * - When held in main hand: pauses active bacteria
+ * - When held in the main hand: pauses active bacteria
  * - When held in off-hand: kills nearby bacteria
  */
 class Jammer : Item(Properties()) {
