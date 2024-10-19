@@ -21,7 +21,11 @@ object General {
         for (x in -1 .. 1) {
             for (y in -1 .. 1) {
                 for (z in -1 .. 1) {
-                    val nextPos = pos.offset(x, y, z)
+                    val nextPos = pos.offset(
+                        if (level.random.nextBoolean()) -x else x,
+                        if (level.random.nextBoolean()) -y else y,
+                        if (level.random.nextBoolean()) -z else z
+                    )
 
                     val coordX = SectionPos.blockToSectionCoord(nextPos.x)
                     val coordY = SectionPos.blockToSectionCoord(nextPos.z)
