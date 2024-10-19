@@ -25,6 +25,9 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.phys.shapes.Shapes
+import org.joml.SimplexNoise.noise
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 class BacteriaBlockEntity(
     blockPos: BlockPos,
@@ -80,11 +83,11 @@ class BacteriaBlockEntity(
     var consumedBlockState: BlockState? = null
 
     /**
-     * Controls how often the block ticks, based on random chance.
+     * Controls how often the block ticks (after decay checks), based on random chance.
      * Lower numbers will result in the block ticking more often, higher is less frequent.
      * @since 1.0.0
      */
-    val tickChance = 40
+    var tickChance = 80
 
     /**
      * Grace counter for the bacteria to spread.
@@ -93,7 +96,7 @@ class BacteriaBlockEntity(
      * @author Miko Elbrecht
      * @since 1.0.0
      */
-    var grace = 5
+    var grace = 1
 
     override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
         cached?.let {
@@ -134,6 +137,7 @@ class BacteriaBlockEntity(
             else null
         newBacteria.cached = cached
         newBacteria.active = active--
+        newBacteria.tickChance = (newBacteria.tickChance * max(1f, 1 + noise((pos.x * 0.1).toFloat(), (pos.y * 0.1).toFloat(), (pos.z * 0.1).toFloat()))).roundToInt()
         level.setBlock(pos, germinationState.setValue(BlockStateProperties.TRIGGERED, newBacteria.consumedBlockState != null), 2)
         level.setBlockEntity(newBacteria)
 
@@ -141,18 +145,16 @@ class BacteriaBlockEntity(
     }
 
     fun tick(level: ServerLevel, pos: BlockPos) {
-        cached?.let {
-            if ((active == -1 || globalJamState) && !globalKillState) return
+        val cache = cached ?: return
+        if ((active == -1 || globalJamState) && !globalKillState) return
 
-            val next = getNextPositionFiltered(level, blockState.block, blockPos, it.first, it.second)
-            if (active > 0 && next != null && !globalKillState) {
-                if (level.random.nextInt(1, tickChance) != 1) return
-                replace(level, next)
-                grace = -1
-            } else if (grace == -1 || globalKillState) {
-                level.setBlock(pos, it.second.defaultBlockState(), 2)
-                setRemoved()
-            } else grace--
+        if (globalKillState || grace < 0 || active == 0) {
+            level.setBlock(pos, cache.second.defaultBlockState(), 2)
+            setRemoved()
+        } else {
+            if (level.random.nextInt(tickChance) != 0) return
+            getNextPositionFiltered(level, blockState.block, blockPos, cache.first, cache.second)?.let { replace(level, it) }
+            grace--
         }
     }
 

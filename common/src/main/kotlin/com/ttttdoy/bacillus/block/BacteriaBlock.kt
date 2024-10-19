@@ -92,6 +92,11 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
 
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
         val entity = level.getBlockEntity(pos) as? BacteriaBlockEntity ?: return Shapes.block()
-        return entity.consumedBlockState?.getShape(level, pos, context) ?: Shapes.block()
+        return entity.consumedBlockState?.getVisualShape(level, pos, context) ?: Shapes.block()
+    }
+
+    override fun getCollisionShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+        val entity = level.getBlockEntity(pos) as? BacteriaBlockEntity ?: return Shapes.block()
+        return entity.consumedBlockState?.getCollisionShape(level, pos, context) ?: Shapes.block()
     }
 }
