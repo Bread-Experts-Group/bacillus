@@ -1,21 +1,24 @@
 package com.ttttdoy.bacillus.client.render
 
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.math.Axis
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacillus.registry.ModRenderType
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
-import net.minecraft.client.resources.model.Material
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.inventory.InventoryMenu
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import java.awt.Color
 
 class BacteriaBlockRenderer(
     val context: BlockEntityRendererProvider.Context
 ) : BlockEntityRenderer<BacteriaBlockEntity> {
     val instance: Minecraft = Minecraft.getInstance()
+    val debugMode = true
 //    val random = RandomSource.create(42)
 //    var quadNumber = 0
 
@@ -29,31 +32,97 @@ class BacteriaBlockRenderer(
     ) {
         val texture = ResourceLocation.fromNamespaceAndPath("bacillus", "textures/block/destroyer.png")
 
-//        val model = context.blockRenderDispatcher.getBlockModel(Blocks.OAK_FENCE_GATE.defaultBlockState())
+        blockEntity.consumedBlockState?.let {
+//            if (it.getCollisionShape(instance.level!!, it.second) != Shapes.block()) { }
 
-        val material = Material(InventoryMenu.BLOCK_ATLAS, texture)
-//        val consumer = material.buffer(bufferSource) { RenderType.solid() }
+            instance.blockRenderer.modelRenderer.renderModel(
+                poseStack.last(),
+                bufferSource.getBuffer(ModRenderType.solidTextureTest(texture)),
+                Blocks.OAK_STAIRS.defaultBlockState(),
+                instance.modelManager.blockModelShaper.getBlockModel(it),
+                1f, 1f, 1f,
+                15728880, packedOverlay
+            )
+        }
 
-
-//        for (direction: Direction in Direction.entries) {
-//            model.getQuads(Blocks.OAK_FENCE_GATE.defaultBlockState(), direction, random).forEach {
-//                LogManager.getLogger().info("QUAD $quadNumber")
-//                it.vertices.forEach { vertex ->
-//                    LogManager.getLogger().info("vertices output: $vertex")
-//                }
-//                quadNumber++
-//            }
-//        }
-//        quadNumber = 0
-
-        // ModelBlockRenderer#renderModelFaceFlat (this has calls inside that make up the shape of the model, could be what we're looking for?)
-        instance.blockRenderer.modelRenderer.renderModel(
-            poseStack.last(),
-            bufferSource.getBuffer(ModRenderType.solidTextureTest(texture)),
-            Blocks.DIAMOND_BLOCK.defaultBlockState(),
-            instance.modelManager.blockModelShaper.getBlockModel(Blocks.GRASS_BLOCK.defaultBlockState()),
-            1f, 1f, 1f,
-            15728880, packedOverlay
+        if (!debugMode) return
+        renderText(
+            "active: ${blockEntity.active}",
+            0.5, 1.5, 0.5,
+            Color.WHITE.rgb,
+            Color(0.0f, 0.0f, 0.0f, 0.5f).rgb,
+            poseStack,
+            bufferSource
         )
+        renderText(
+            "grace: ${blockEntity.grace}",
+            0.5, 1.8, 0.5,
+            Color.WHITE.rgb,
+            Color(0f, 0f, 0f, 0.5f).rgb,
+            poseStack,
+            bufferSource
+        )
+        renderText(
+            "output: ${blockEntity.cached?.second}",
+            0.5, 2.0, 0.5,
+            Color.WHITE.rgb,
+            Color(0f, 0f, 0f, 0.5f).rgb,
+            poseStack, bufferSource
+        )
+
+        blockEntity.consumedBlockState?.let {
+            renderText(
+                "consumedBlockState: $it",
+                0.5, 2.3, 0.5,
+                Color.WHITE.rgb,
+                Color(0f, 0f, 0f, 0.5f).rgb,
+                poseStack,
+                bufferSource
+            )
+        }
+
+        var pos = 2.6
+        blockEntity.cached?.first?.forEach { block: Block ->
+            renderText(
+                "input: $block",
+                0.5, pos, 0.5,
+                Color.WHITE.rgb,
+                Color(0f, 0f, 0f, 0.5f).rgb,
+                poseStack, bufferSource
+            )
+            pos += 0.2
+        }
+        pos = 2.2
+    }
+
+    private fun renderText(
+        text: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        color: Int,
+        bgColor: Int,
+        poseStack: PoseStack,
+        bufferSource: MultiBufferSource
+    ) {
+        poseStack.pushPose()
+        poseStack.translate(x, y, z)
+        poseStack.mulPose(Axis.XN.rotationDegrees(180f))
+        poseStack.mulPose(Axis.YN.rotationDegrees(180f))
+        poseStack.mulPose(Axis.YN.rotationDegrees(-instance.player!!.yHeadRot))
+        poseStack.mulPose(Axis.XN.rotationDegrees(instance.player!!.xRot))
+        poseStack.scale(0.02f, 0.02f, 0.02f)
+        context.font.drawInBatch(
+            text,
+            -context.font.width(text) / 2f, 0f,
+            color,
+            false,
+            poseStack.last().pose(),
+            bufferSource,
+            Font.DisplayMode.NORMAL,
+            bgColor,
+            15728880
+        )
+        poseStack.popPose()
     }
 }

@@ -90,9 +90,10 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
     // todo IT NOT WORK
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
         val entity = level.getBlockEntity(pos) as? BacteriaBlockEntity ?: return Shapes.block()
-        return entity.consumingBlockData?.let {
-            return if (it.third == Shapes.empty()) Shapes.block()
-            else it.third
-        } ?: Shapes.block()
+//        return entity.consumingBlockData?.let {
+//            return if (it.third == Shapes.empty()) Shapes.block()
+//            else it.third
+//        } ?: Shapes.block()
+        return Shapes.block()
     }
 }

@@ -24,16 +24,14 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.phys.shapes.VoxelShape
+import org.apache.logging.log4j.LogManager
 
 class BacteriaBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState
 ) : BlockEntity(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get(), blockPos, blockState) {
     var cached : Pair<Set<Block>?, Block>? = null
-    /**
-     * Used in the renderer to set the bacteria's model and shape to the block it is consuming
-     */
-    var consumingBlockData: Triple<BlockState, BlockPos, VoxelShape>? = null
+    var consumedBlockState: BlockState? = null
     fun getIO(level: Level): Boolean {
         if (cached != null) return false
         var input : MutableList<Block>? = mutableListOf()
@@ -94,10 +92,13 @@ class BacteriaBlockEntity(
 
     private fun replace(level: Level, pos: BlockPos) {
         level.getBlockEntity(pos)?.let(Clearable::tryClear)
-        level.setBlock(pos, germinationState, 2)
+
         val newBacteria = BacteriaBlockEntity(pos, germinationState)
+        newBacteria.consumedBlockState = level.getBlockState(pos)
+        LogManager.getLogger().info(newBacteria.consumedBlockState!!.properties)
         newBacteria.cached = cached
         newBacteria.active = active--
+        level.setBlock(pos, germinationState, 2)
         level.setBlockEntity(newBacteria)
         level.playSound(null, pos, SoundEvents.CHORUS_FLOWER_GROW, SoundSource.BLOCKS, 0.8f, 1f)
     }
@@ -123,7 +124,6 @@ class BacteriaBlockEntity(
             val next = NeighborLists.getNextPositionFiltered(level, blockState.block, blockPos, it.first, it.second)
             if (active > 0 && next != null && !globalKillState) {
                 if (level.random.nextInt(1, tickChance) != 1) return
-                consumingBlockData = Triple(level.getBlockState(next), next, level.getBlockState(next).getCollisionShape(level, next))
                 replace(level, next)
                 grace = -1
             } else if (grace == -1 || globalKillState) {

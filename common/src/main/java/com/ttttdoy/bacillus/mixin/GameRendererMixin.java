@@ -22,7 +22,6 @@ abstract class GameRendererMixin {
     @Inject(method = "reloadShaders", at = @At("TAIL"))
     private void reloadShaders(ResourceProvider resourceProvider, CallbackInfo ci) {
         try {
-            System.out.println("THE MIXIN IS WORKING");
             final ShaderInstance solidTextureShader = new ShaderInstance(resourceProvider, "rendertype_solid_texture", DefaultVertexFormat.BLOCK);
             ModRenderType.INSTANCE.setSolidInstance(solidTextureShader);
             shaders.put(solidTextureShader.getName(), solidTextureShader);
