@@ -11,6 +11,13 @@
       ],
       "conditions": [
         {
+          "condition": "minecraft:block_state_property",
+          "block": "bacillus:destroyer",
+          "properties": {
+            "triggered": "false"
+          }
+        },
+        {
           "condition": "minecraft:match_tool",
           "predicate": {
             "items": "#minecraft:hoes"

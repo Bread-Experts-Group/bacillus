@@ -20,8 +20,6 @@ class BacteriaBlockRenderer(
 ) : BlockEntityRenderer<BacteriaBlockEntity> {
     val instance: Minecraft = Minecraft.getInstance()
     val debugMode = false
-//    val random = RandomSource.create(42)
-//    var quadNumber = 0
 
     override fun render(
         blockEntity: BacteriaBlockEntity,
@@ -38,7 +36,7 @@ class BacteriaBlockRenderer(
         )
 
         blockEntity.consumedBlockState?.let {
-            instance.blockRenderer.modelRenderer.renderModel(
+            context.blockRenderDispatcher.modelRenderer.renderModel(
                 poseStack.last(),
                 bufferSource.getBuffer(ModRenderType.solidTextureTest(texture)),
                 it,
