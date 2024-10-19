@@ -8,6 +8,5 @@ public final class BacillusNeoForge {
     public BacillusNeoForge() {
         // Run our common setup.
         Bacillus.init();
-        Bacillus.initClient();
     }
 }
