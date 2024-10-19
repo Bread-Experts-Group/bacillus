@@ -3,6 +3,7 @@ package com.ttttdoy.bacillus.client.render
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
+import com.ttttdoy.bacillus.registry.ModBlocks
 import com.ttttdoy.bacillus.registry.ModRenderType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
@@ -11,14 +12,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import java.awt.Color
 
 class BacteriaBlockRenderer(
     val context: BlockEntityRendererProvider.Context
 ) : BlockEntityRenderer<BacteriaBlockEntity> {
     val instance: Minecraft = Minecraft.getInstance()
-    val debugMode = true
+    val debugMode = false
 //    val random = RandomSource.create(42)
 //    var quadNumber = 0
 
@@ -30,18 +31,20 @@ class BacteriaBlockRenderer(
         packedLight: Int,
         packedOverlay: Int
     ) {
-        val texture = ResourceLocation.fromNamespaceAndPath("bacillus", "textures/block/destroyer.png")
+        if (!blockEntity.blockState.getValue(BlockStateProperties.TRIGGERED)) return
+        val texture = ResourceLocation.fromNamespaceAndPath(
+            "bacillus",
+            "textures/block/${if (blockEntity.blockState.block == ModBlocks.DESTROYER.get().block) "destroyer" else "replacer"}.png"
+        )
 
         blockEntity.consumedBlockState?.let {
-//            if (it.getCollisionShape(instance.level!!, it.second) != Shapes.block()) { }
-
             instance.blockRenderer.modelRenderer.renderModel(
                 poseStack.last(),
                 bufferSource.getBuffer(ModRenderType.solidTextureTest(texture)),
-                Blocks.OAK_STAIRS.defaultBlockState(),
+                it,
                 instance.modelManager.blockModelShaper.getBlockModel(it),
                 1f, 1f, 1f,
-                15728880, packedOverlay
+                packedLight, packedOverlay
             )
         }
 

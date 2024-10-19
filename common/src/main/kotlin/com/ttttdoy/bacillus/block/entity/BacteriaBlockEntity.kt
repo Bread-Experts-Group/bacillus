@@ -3,7 +3,9 @@ package com.ttttdoy.bacillus.block.entity
 import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import com.ttttdoy.bacillus.registry.ModBlockTags
 import com.ttttdoy.bacillus.registry.ModBlocks
-import com.ttttdoy.bacillus.util.NeighborLists
+import com.ttttdoy.bacillus.util.General.deserializeBlockState
+import com.ttttdoy.bacillus.util.General.getNextPositionFiltered
+import com.ttttdoy.bacillus.util.General.serializeInto
 import net.minecraft.core.BlockPos
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
@@ -22,14 +24,13 @@ import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import org.apache.logging.log4j.LogManager
+import net.minecraft.world.phys.shapes.Shapes
 
 class BacteriaBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState
 ) : BlockEntity(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get(), blockPos, blockState) {
     var cached : Pair<Set<Block>?, Block>? = null
-    var consumedBlockState: BlockState? = null
     fun getIO(level: Level): Boolean {
         if (cached != null) return false
         var input : MutableList<Block>? = mutableListOf()
@@ -63,47 +64,25 @@ class BacteriaBlockEntity(
     override fun getUpdateTag(registries: HolderLookup.Provider): CompoundTag =
         super.getUpdateTag(registries).also { saveAdditional(it, registries) }
 
+    /**
+     * The operative state of the bacteria.
+     * * -1 means the bacteria is inactive.
+     * * 0 means the bacteria is dead and will decay.
+     * * Any positive number means the bacteria is active and will spread.
+     * @since 1.0.0
+     */
     var active = -1
 
-    override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
-        cached?.let {
-            if (it.first != null) compoundTag.putString("inputs", it.first!!.joinToString("#") { block -> BuiltInRegistries.BLOCK.getKey(block).toString() })
-            compoundTag.putString("outputs", BuiltInRegistries.BLOCK.getKey(it.second).toString())
-        }
-        compoundTag.putInt("active", active)
-        compoundTag.putInt("grace", grace)
-        super.saveAdditional(compoundTag, provider)
-    }
-
-    override fun loadAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
-        val input = compoundTag.getString("inputs").split("#").map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)) }.toSet()
-        val output = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundTag.getString("outputs")))
-        cached = input to output
-        active = compoundTag.getInt("active")
-        grace = compoundTag.getInt("grace")
-        super.loadAdditional(compoundTag, provider)
-    }
-
-    val germinationState =
-        (if (blockState.block == ModBlocks.DESTROYER.get().block) ModBlocks.DESTROYER.get().block.defaultBlockState()
-        else ModBlocks.REPLACER.get().block.defaultBlockState()).setValue(BlockStateProperties.ENABLED, true)
-
-    private fun replace(level: Level, pos: BlockPos) {
-        level.getBlockEntity(pos)?.let(Clearable::tryClear)
-
-        val newBacteria = BacteriaBlockEntity(pos, germinationState)
-        newBacteria.consumedBlockState = level.getBlockState(pos)
-        LogManager.getLogger().info(newBacteria.consumedBlockState!!.properties)
-        newBacteria.cached = cached
-        newBacteria.active = active--
-        level.setBlock(pos, germinationState, 2)
-        level.setBlockEntity(newBacteria)
-        level.playSound(null, pos, SoundEvents.CHORUS_FLOWER_GROW, SoundSource.BLOCKS, 0.8f, 1f)
-    }
+    /**
+     * The block state this bacteria was spawned over for use in rendering.
+     * @since 1.0.0
+     */
+    var consumedBlockState: BlockState? = null
 
     /**
      * Controls how often the block ticks, based on random chance.
      * Lower numbers will result in the block ticking more often, higher is less frequent.
+     * @since 1.0.0
      */
     val tickChance = 40
 
@@ -115,11 +94,57 @@ class BacteriaBlockEntity(
      * @since 1.0.0
      */
     var grace = 5
+
+    override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
+        cached?.let {
+            if (it.first != null) compoundTag.putString("inputs", it.first!!.joinToString("#") { block -> BuiltInRegistries.BLOCK.getKey(block).toString() })
+            compoundTag.putString("outputs", BuiltInRegistries.BLOCK.getKey(it.second).toString())
+        }
+        compoundTag.putInt("active", active)
+        compoundTag.putInt("grace", grace)
+        if (consumedBlockState != null) CompoundTag().also {
+            consumedBlockState!!.serializeInto(it)
+            compoundTag.put("consumedBlockState", it)
+        }
+        super.saveAdditional(compoundTag, provider)
+    }
+
+    override fun loadAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
+        val input = compoundTag.getString("inputs").split("#").map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)) }.toSet()
+        val output = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundTag.getString("outputs")))
+        cached = input to output
+        active = compoundTag.getInt("active")
+        grace = compoundTag.getInt("grace")
+        if (compoundTag.contains("consumedBlockState"))
+            consumedBlockState = compoundTag.getCompound("consumedBlockState")?.deserializeBlockState()
+        super.loadAdditional(compoundTag, provider)
+    }
+
+    val germinationState =
+        (if (blockState.block == ModBlocks.DESTROYER.get().block) ModBlocks.DESTROYER.get().block.defaultBlockState()
+        else ModBlocks.REPLACER.get().block.defaultBlockState()).setValue(BlockStateProperties.ENABLED, true)
+
+    private fun replace(level: Level, pos: BlockPos) {
+        level.getBlockEntity(pos)?.let(Clearable::tryClear)
+
+        val newBacteria = BacteriaBlockEntity(pos, germinationState)
+        val consumeBlockState = level.getBlockState(pos)
+        newBacteria.consumedBlockState =
+            if (consumeBlockState.getShape(level, pos) != Shapes.block()) consumeBlockState
+            else null
+        newBacteria.cached = cached
+        newBacteria.active = active--
+        level.setBlock(pos, germinationState.setValue(BlockStateProperties.TRIGGERED, newBacteria.consumedBlockState != null), 2)
+        level.setBlockEntity(newBacteria)
+
+        level.playSound(null, pos, SoundEvents.CHORUS_FLOWER_GROW, SoundSource.BLOCKS, 0.8f, 1f)
+    }
+
     fun tick(level: ServerLevel, pos: BlockPos) {
         cached?.let {
             if ((active == -1 || globalJamState) && !globalKillState) return
 
-            val next = NeighborLists.getNextPositionFiltered(level, blockState.block, blockPos, it.first, it.second)
+            val next = getNextPositionFiltered(level, blockState.block, blockPos, it.first, it.second)
             if (active > 0 && next != null && !globalKillState) {
                 if (level.random.nextInt(1, tickChance) != 1) return
                 replace(level, next)

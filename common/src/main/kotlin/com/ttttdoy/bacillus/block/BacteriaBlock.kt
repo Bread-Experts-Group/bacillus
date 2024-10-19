@@ -36,11 +36,12 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         this.registerDefaultState(
             this.defaultBlockState()
                 .setValue(BlockStateProperties.ENABLED, false)
+                .setValue(BlockStateProperties.TRIGGERED, false)
         )
     }
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
-        builder.add(BlockStateProperties.ENABLED)
+        builder.add(BlockStateProperties.ENABLED, BlockStateProperties.TRIGGERED)
         super.createBlockStateDefinition(builder)
     }
 
@@ -84,16 +85,13 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
     }
 
     override fun codec(): MapCodec<out BaseEntityBlock> = codec
-    override fun getRenderShape(blockState: BlockState): RenderShape = RenderShape.INVISIBLE
+    override fun getRenderShape(blockState: BlockState): RenderShape =
+        if (blockState.getValue(BlockStateProperties.TRIGGERED)) RenderShape.INVISIBLE
+        else RenderShape.MODEL
     override fun hasDynamicShape(): Boolean = true
 
-    // todo IT NOT WORK
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
         val entity = level.getBlockEntity(pos) as? BacteriaBlockEntity ?: return Shapes.block()
-//        return entity.consumingBlockData?.let {
-//            return if (it.third == Shapes.empty()) Shapes.block()
-//            else it.third
-//        } ?: Shapes.block()
-        return Shapes.block()
+        return entity.consumedBlockState?.getShape(level, pos, context) ?: Shapes.block()
     }
 }
