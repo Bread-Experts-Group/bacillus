@@ -20,7 +20,9 @@ class Jammer : Item(Properties()) {
         if (level.isClientSide) return InteractionResultHolder.pass(player.getItemInHand(interactionHand))
         if (interactionHand == InteractionHand.MAIN_HAND) BacteriaBlockEntity.globalJamState = !BacteriaBlockEntity.globalJamState
         else BacteriaBlockEntity.globalKillState = !BacteriaBlockEntity.globalKillState
-        player.sendSystemMessage(Component.literal("Jamming: ${BacteriaBlockEntity.globalJamState}, Killing: ${BacteriaBlockEntity.globalKillState}"))
+        player.sendSystemMessage(
+            Component.literal("Jamming: ${BacteriaBlockEntity.globalJamState}, Killing: ${BacteriaBlockEntity.globalKillState}")
+        )
         return InteractionResultHolder.success<ItemStack>(player.getItemInHand(interactionHand))
     }
 }

@@ -24,7 +24,11 @@ object Bacillus {
     @JvmStatic
     fun initClient() {
         LifecycleEvent.SETUP.register {
-            BlockEntityRendererRegistry.register(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()) { ctx -> BacteriaBlockRenderer(ctx) }
+            BlockEntityRendererRegistry.register(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()) { ctx ->
+                BacteriaBlockRenderer(
+                    ctx
+                )
+            }
         }
     }
 }

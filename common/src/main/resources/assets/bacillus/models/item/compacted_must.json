@@ -1,6 +1,6 @@
 {
-    "parent": "minecraft:item/generated",
-    "textures": {
-        "layer0": "bacillus:item/compacted_must"
-    }
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "bacillus:item/compacted_must"
+  }
 }

@@ -1,7 +1,7 @@
 {
-    "variants": {
-        "": {
-            "model": "bacillus:block/replacer"
-        }
+  "variants": {
+    "": {
+      "model": "bacillus:block/replacer"
     }
+  }
 }

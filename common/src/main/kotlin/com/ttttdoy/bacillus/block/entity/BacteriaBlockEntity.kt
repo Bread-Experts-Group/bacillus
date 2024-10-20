@@ -33,10 +33,10 @@ class BacteriaBlockEntity(
     blockPos: BlockPos,
     blockState: BlockState
 ) : BlockEntity(ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get(), blockPos, blockState) {
-    var cached : Pair<Set<Block>?, Block>? = null
+    var cached: Pair<Set<Block>?, Block>? = null
     fun getIO(level: Level): Boolean {
         if (cached != null) return false
-        var input : MutableList<Block>? = mutableListOf()
+        var input: MutableList<Block>? = mutableListOf()
         var position = blockPos.below()
         do {
             val state = level.getBlockState(position)
@@ -52,7 +52,7 @@ class BacteriaBlockEntity(
             position = position.above()
         } while (true)
 
-        val output : Block = if (blockState.block == ModBlocks.REPLACER.get().block) {
+        val output: Block = if (blockState.block == ModBlocks.REPLACER.get().block) {
             val above = level.getBlockState(blockPos.above())
             if (above.isAir || above == blockState.block) return false else above.block
         } else Blocks.AIR
@@ -100,7 +100,9 @@ class BacteriaBlockEntity(
 
     override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
         cached?.let {
-            if (it.first != null) compoundTag.putString("inputs", it.first!!.joinToString("#") { block -> BuiltInRegistries.BLOCK.getKey(block).toString() })
+            if (it.first != null) compoundTag.putString(
+                "inputs",
+                it.first!!.joinToString("#") { block -> BuiltInRegistries.BLOCK.getKey(block).toString() })
             compoundTag.putString("outputs", BuiltInRegistries.BLOCK.getKey(it.second).toString())
         }
         compoundTag.putInt("active", active)
@@ -113,7 +115,8 @@ class BacteriaBlockEntity(
     }
 
     override fun loadAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
-        val input = compoundTag.getString("inputs").split("#").map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)) }.toSet()
+        val input =
+            compoundTag.getString("inputs").split("#").map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)) }.toSet()
         val output = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundTag.getString("outputs")))
         cached = input to output
         active = compoundTag.getInt("active")
@@ -137,7 +140,10 @@ class BacteriaBlockEntity(
             else null
         newBacteria.cached = cached
         newBacteria.active = active--
-        newBacteria.tickChance = (newBacteria.tickChance * max(1f, 1 + noise((pos.x * 0.1).toFloat(), (pos.y * 0.1).toFloat(), (pos.z * 0.1).toFloat()))).roundToInt()
+        newBacteria.tickChance = (newBacteria.tickChance * max(
+            1f,
+            1 + noise((pos.x * 0.1).toFloat(), (pos.y * 0.1).toFloat(), (pos.z * 0.1).toFloat())
+        )).roundToInt()
         level.setBlock(pos, germinationState.setValue(BlockStateProperties.TRIGGERED, newBacteria.consumedBlockState != null), 2)
         level.setBlockEntity(newBacteria)
 

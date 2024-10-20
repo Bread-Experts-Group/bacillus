@@ -17,15 +17,22 @@ import java.util.Map;
 
 @Mixin(GameRenderer.class)
 abstract class GameRendererMixin {
-    @Shadow @Final private Map<String, ShaderInstance> shaders;
+    @Shadow
+    @Final
+    private Map<String, ShaderInstance> shaders;
 
     @Inject(method = "reloadShaders", at = @At("TAIL"))
     private void reloadShaders(ResourceProvider resourceProvider, CallbackInfo ci) {
         try {
-            final ShaderInstance solidTextureShader = new ShaderInstance(resourceProvider, "rendertype_solid_texture", DefaultVertexFormat.BLOCK);
+            final ShaderInstance solidTextureShader = new ShaderInstance(
+                    resourceProvider,
+                    "rendertype_solid_texture",
+                    DefaultVertexFormat.BLOCK
+            );
             ModRenderType.INSTANCE.setSolidInstance(solidTextureShader);
             shaders.put(solidTextureShader.getName(), solidTextureShader);
         } catch (IOException exception) {
             throw new RuntimeException("[BACILLUS] could not reload shaders", exception);
-        }}
+        }
+    }
 }

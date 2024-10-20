@@ -20,6 +20,7 @@ object ModBlocks {
      * @see BacteriaBlock
      */
     val REPLACER: RegistrySupplier<BlockItem> = registerBlockItem("replacer", { BacteriaBlock() }, Item.Properties())
+
     /**
      * @see BacteriaBlock
      */
@@ -27,10 +28,11 @@ object ModBlocks {
 
     // todo textures.
     /**
-     * Activating a destroyer block with this above it marks every block in the game as destroyable.
+     * Activating a destroyer block with this above, it marks every block in the game as destroyable.
      * - Excludes: Bacteria, Air, blocks in the unreplaceable and/or unbreakable tag.
      */
-    val EVERYTHING: RegistrySupplier<BlockItem> = registerBlockItem("everything", { Block(BlockBehaviour.Properties.of()) }, Item.Properties())
+    val EVERYTHING: RegistrySupplier<BlockItem> =
+        registerBlockItem("everything", { Block(BlockBehaviour.Properties.of()) }, Item.Properties())
 
     /**
      * @see MustBlock

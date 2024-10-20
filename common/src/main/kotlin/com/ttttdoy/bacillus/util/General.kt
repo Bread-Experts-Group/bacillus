@@ -13,14 +13,17 @@ import net.minecraft.world.level.block.state.properties.EnumProperty
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.block.state.properties.Property
 import net.minecraft.world.level.chunk.LevelChunk
+import org.apache.logging.log4j.LogManager
 
 @Suppress("NO_REFLECTION_IN_CLASS_PATH")
 object General {
-    fun getNextPositionFiltered(level: Level, block: Block, pos: BlockPos, filter: Set<Block>?, except : Block?): BlockPos? {
+    val LOGGER = LogManager.getLogger()
+
+    fun getNextPositionFiltered(level: Level, block: Block, pos: BlockPos, filter: Set<Block>?, except: Block?): BlockPos? {
         var chunk: LevelChunk? = null
-        for (x in -1 .. 1) {
-            for (y in -1 .. 1) {
-                for (z in -1 .. 1) {
+        for (x in -1..1) {
+            for (y in -1..1) {
+                for (z in -1..1) {
                     val nextPos = pos.offset(
                         if (level.random.nextBoolean()) -x else x,
                         if (level.random.nextBoolean()) -y else y,
@@ -47,11 +50,11 @@ object General {
         tag.putString("block", BuiltInRegistries.BLOCK.getKey(this.block).toString())
         tag.put("properties", CompoundTag().also { tag ->
             this.properties.forEach {
-                when(it) {
+                when (it) {
                     is BooleanProperty -> tag.putBoolean(it.name, this.getValue(it))
                     is IntegerProperty -> tag.putInt(it.name, this.getValue(it))
                     is EnumProperty -> tag.putString(it.name, this.getValue(it).name)
-                    else -> println("S:" + it::class.qualifiedName)
+                    else -> LOGGER.info("Cannot serialize: ${it::class.qualifiedName}")
                 }
             }
         })
@@ -61,13 +64,17 @@ object General {
         var state = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(this.getString("block"))).defaultBlockState()
         this.getCompound("properties")?.let { tag ->
             state.properties.forEach {
-                when(it) {
+                when (it) {
                     is BooleanProperty -> state = state.setValue(it, tag.getBoolean(it.name))
                     is IntegerProperty -> state = state.setValue(it, tag.getInt(it.name))
                     is EnumProperty -> state = General::class.java.methods.first { it.name == "setStateCrazy" }.invoke(
-                        General, state, it, it.valueClass.methods.first { it.name == "valueOf" }.invoke(null, tag.getString(it.name))
+                        General,
+                        state,
+                        it,
+                        it.valueClass.methods.first { it.name == "valueOf" }.invoke(null, tag.getString(it.name))
                     ) as BlockState
-                    else -> println("D:" + it::class.qualifiedName)
+
+                    else -> LOGGER.info("Cannot deserialize: ${it::class.qualifiedName}")
                 }
             }
         }
@@ -77,6 +84,6 @@ object General {
     // DANGER: this code is terrifying
     @Suppress("UNCHECKED_CAST", "UNUSED")
     fun <T : Comparable<T>> setStateCrazy(state: BlockState, property: EnumProperty<*>, any: Any): BlockState {
-        return state.setValue<T, T>(property as Property<T>, any as T)
+        return state.setValue(property as Property<T>, any as T)
     }
 }

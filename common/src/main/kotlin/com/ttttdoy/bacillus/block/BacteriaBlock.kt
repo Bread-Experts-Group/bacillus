@@ -24,10 +24,16 @@ import net.minecraft.world.phys.shapes.VoxelShape
 /**
  * ### Main bacteria block class for the destroyer and replacer.
  *
- * - Replacer: Place any full block on top of the replacer, and it will convert the block type below it to whatever was placed on top.
+ * - Replacer: Place any full block on top of the replacer,
+ * and it will convert the block type below it to whatever was placed on top.
  * - Destroyer: Place a set of blocks above the destroyer, then it will spread and consume those blocks.
- * - The bacteria has a 3x3x3 block reach. If it runs out of valid blocks within range, it will disappear.
- * - The bacteria has a limited range, controlled by [BacteriaBlockEntity.active]. Once it reaches 0, the bacteria will no longer spread.
+ * - The bacteria has a 3 x 3 x 3 block reach (defined in [com.ttttdoy.bacillus.util.General]).
+ * If it runs out of valid blocks within range, it will disappear.
+ * - The bacteria has a limited range, controlled by [BacteriaBlockEntity.active].
+ * Once [BacteriaBlockEntity.active] reaches 0, the bacteria will no longer spread
+ * @see BacteriaBlockEntity.active
+ * @see BacteriaBlockEntity.grace
+ * @since 1.0.0
  */
 class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).instabreak().noOcclusion()) {
     val codec: MapCodec<BacteriaBlock> = simpleCodec { this }
@@ -88,6 +94,7 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
     override fun getRenderShape(blockState: BlockState): RenderShape =
         if (blockState.getValue(BlockStateProperties.TRIGGERED)) RenderShape.INVISIBLE
         else RenderShape.MODEL
+
     override fun hasDynamicShape(): Boolean = true
 
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
