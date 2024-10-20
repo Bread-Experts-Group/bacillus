@@ -21,10 +21,10 @@ import java.awt.Color
  * * Only renders when the block is converting a block that doesn't have a full block collision and the trigger state is true
  */
 class BacteriaBlockRenderer(
-    val context: BlockEntityRendererProvider.Context
+    private val context: BlockEntityRendererProvider.Context
 ) : BlockEntityRenderer<BacteriaBlockEntity> {
-    val instance: Minecraft = Minecraft.getInstance()
-    val debugMode = false
+    private val instance: Minecraft = Minecraft.getInstance()
+    private val debugMode = false
 
     /**
      * Renders this [BlockEntityRenderer]
