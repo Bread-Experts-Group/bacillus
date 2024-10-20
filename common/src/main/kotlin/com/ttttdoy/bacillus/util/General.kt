@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.properties.Property
 import net.minecraft.world.level.chunk.LevelChunk
 import org.apache.logging.log4j.LogManager
 
+// THIS CLASS IS HAZARDOUS
 @Suppress("NO_REFLECTION_IN_CLASS_PATH")
 object General {
     val LOGGER = LogManager.getLogger()

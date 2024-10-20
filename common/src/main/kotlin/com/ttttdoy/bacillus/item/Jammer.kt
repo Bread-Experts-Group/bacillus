@@ -16,13 +16,18 @@ import net.minecraft.world.level.Level
  * - When held in off-hand: kills nearby bacteria
  */
 class Jammer : Item(Properties()) {
-    override fun use(level: Level, player: Player, interactionHand: InteractionHand): InteractionResultHolder<ItemStack> {
+    override fun use(
+        level: Level,
+        player: Player,
+        interactionHand: InteractionHand
+    ): InteractionResultHolder<ItemStack> {
         if (level.isClientSide) return InteractionResultHolder.pass(player.getItemInHand(interactionHand))
-        if (interactionHand == InteractionHand.MAIN_HAND) BacteriaBlockEntity.globalJamState = !BacteriaBlockEntity.globalJamState
+        if (interactionHand == InteractionHand.MAIN_HAND) BacteriaBlockEntity.globalJamState =
+            !BacteriaBlockEntity.globalJamState
         else BacteriaBlockEntity.globalKillState = !BacteriaBlockEntity.globalKillState
         player.sendSystemMessage(
             Component.literal("Jamming: ${BacteriaBlockEntity.globalJamState}, Killing: ${BacteriaBlockEntity.globalKillState}")
         )
-        return InteractionResultHolder.success<ItemStack>(player.getItemInHand(interactionHand))
+        return InteractionResultHolder.success(player.getItemInHand(interactionHand))
     }
 }

@@ -61,15 +61,16 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         if (level is ServerLevel) createTickerHelper(
             blockEntityType,
             ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()
-        ) { level, pos, state, blockEntity -> blockEntity.tick(level as ServerLevel, pos) }
+        ) { tLevel, tPos, _, tBlockEntity -> tBlockEntity.tick(tLevel as ServerLevel, tPos) }
         else null
 
-    private fun start(level: Level, blockPos: BlockPos, blockState: BlockState) = level.getBlockEntity(blockPos)?.let { entity ->
-        if (entity is BacteriaBlockEntity && entity.getIO(level)) {
-            entity.active = 500
-            level.setBlock(blockPos, blockState.setValue(BlockStateProperties.ENABLED, true), 2)
+    private fun start(level: Level, blockPos: BlockPos, blockState: BlockState) =
+        level.getBlockEntity(blockPos)?.let { entity ->
+            if (entity is BacteriaBlockEntity && entity.getIO(level)) {
+                entity.active = 500
+                level.setBlock(blockPos, blockState.setValue(BlockStateProperties.ENABLED, true), 2)
+            }
         }
-    }
 
     override fun neighborChanged(
         blockState: BlockState,
@@ -84,7 +85,13 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         start(level, blockPos, blockState)
     }
 
-    override fun onPlace(blockState: BlockState, level: Level, pos: BlockPos, oldState: BlockState, movedByPiston: Boolean) {
+    override fun onPlace(
+        blockState: BlockState,
+        level: Level,
+        pos: BlockPos,
+        oldState: BlockState,
+        movedByPiston: Boolean
+    ) {
         if (blockState.getValue(BlockStateProperties.ENABLED)) return
         if (!level.hasNeighborSignal(pos)) return
         start(level, pos, blockState)
@@ -102,7 +109,12 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         return entity.consumedBlockState?.getVisualShape(level, pos, context) ?: Shapes.block()
     }
 
-    override fun getCollisionShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
+    override fun getCollisionShape(
+        state: BlockState,
+        level: BlockGetter,
+        pos: BlockPos,
+        context: CollisionContext
+    ): VoxelShape {
         val entity = level.getBlockEntity(pos) as? BacteriaBlockEntity ?: return Shapes.block()
         return entity.consumedBlockState?.getCollisionShape(level, pos, context) ?: Shapes.block()
     }

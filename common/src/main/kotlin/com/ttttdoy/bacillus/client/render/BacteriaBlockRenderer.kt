@@ -15,12 +15,20 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import java.awt.Color
 
+/**
+ * Renderer for the Destroyer and Bacteria
+ *
+ * * Only renders when the block is converting a block that doesn't have a full block collision and the trigger state is true
+ */
 class BacteriaBlockRenderer(
     val context: BlockEntityRendererProvider.Context
 ) : BlockEntityRenderer<BacteriaBlockEntity> {
     val instance: Minecraft = Minecraft.getInstance()
     val debugMode = false
 
+    /**
+     * Renders this [BlockEntityRenderer]
+     */
     override fun render(
         blockEntity: BacteriaBlockEntity,
         partialTick: Float,
@@ -38,7 +46,7 @@ class BacteriaBlockRenderer(
         blockEntity.consumedBlockState?.let {
             context.blockRenderDispatcher.modelRenderer.renderModel(
                 poseStack.last(),
-                bufferSource.getBuffer(ModRenderType.solidTextureTest(texture)),
+                bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
                 it,
                 instance.modelManager.blockModelShaper.getBlockModel(it),
                 1f, 1f, 1f,
@@ -106,12 +114,14 @@ class BacteriaBlockRenderer(
         poseStack: PoseStack,
         bufferSource: MultiBufferSource
     ) {
+        val player = instance.player ?: return
+
         poseStack.pushPose()
         poseStack.translate(x, y, z)
         poseStack.mulPose(Axis.XN.rotationDegrees(180f))
         poseStack.mulPose(Axis.YN.rotationDegrees(180f))
-        poseStack.mulPose(Axis.YN.rotationDegrees(-instance.player!!.yHeadRot))
-        poseStack.mulPose(Axis.XN.rotationDegrees(instance.player!!.xRot))
+        poseStack.mulPose(Axis.YN.rotationDegrees(-player.yHeadRot))
+        poseStack.mulPose(Axis.XN.rotationDegrees(player.xRot))
         poseStack.scale(0.02f, 0.02f, 0.02f)
         context.font.drawInBatch(
             text,

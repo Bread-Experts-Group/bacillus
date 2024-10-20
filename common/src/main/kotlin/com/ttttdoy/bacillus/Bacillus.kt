@@ -21,6 +21,9 @@ object Bacillus {
     @JvmStatic
     fun init() = Registry.registerAll()
 
+    /**
+     * Client side mod initializer.
+     */
     @JvmStatic
     fun initClient() {
         LifecycleEvent.SETUP.register {

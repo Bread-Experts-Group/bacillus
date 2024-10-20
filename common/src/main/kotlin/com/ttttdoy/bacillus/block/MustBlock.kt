@@ -15,11 +15,13 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 
 class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE)), BonemealableBlock {
+
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(AGE)
     }
 
-    override fun isValidBonemealTarget(levelReader: LevelReader, blockPos: BlockPos, blockState: BlockState): Boolean = true
+    override fun isValidBonemealTarget(levelReader: LevelReader, blockPos: BlockPos, blockState: BlockState): Boolean =
+        true
 
     override fun isBonemealSuccess(
         level: Level,
@@ -34,7 +36,7 @@ class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE)), BonemealableBlock
         blockPos: BlockPos,
         blockState: BlockState
     ) {
-        val i = blockState.getValue<Int>(AGE) + randomSource.nextInt(3) + 1
+        val i = blockState.getValue(AGE) + randomSource.nextInt(3) + 1
         if (i < 16) serverLevel.setBlockAndUpdate(blockPos, blockState.setValue(AGE, i))
         if (randomSource.nextInt(8) + 8 < i) {
             val next = getNextPositionFiltered(serverLevel, blockState.block, blockPos, filter, null)
@@ -46,15 +48,19 @@ class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE)), BonemealableBlock
     }
 
     override fun isRandomlyTicking(blockState: BlockState): Boolean = true
-    override fun randomTick(blockState: BlockState, serverLevel: ServerLevel, blockPos: BlockPos, randomSource: RandomSource) =
-        performBonemeal(serverLevel, randomSource, blockPos, blockState)
+    override fun randomTick(
+        blockState: BlockState,
+        serverLevel: ServerLevel,
+        blockPos: BlockPos,
+        randomSource: RandomSource
+    ) = performBonemeal(serverLevel, randomSource, blockPos, blockState)
 
     init {
         this.registerDefaultState(this.getStateDefinition().any().setValue(AGE, 0))
     }
 
     companion object {
-        val AGE: IntegerProperty = BlockStateProperties.AGE_15
+        private val AGE: IntegerProperty = BlockStateProperties.AGE_15
         private val filter: Set<Block> = setOf(Blocks.WATER)
     }
 }

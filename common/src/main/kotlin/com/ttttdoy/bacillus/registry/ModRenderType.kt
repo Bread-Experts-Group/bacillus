@@ -10,53 +10,29 @@ import net.minecraft.resources.ResourceLocation
 import java.util.function.Function
 
 object ModRenderType {
-    fun solidTextureTest(location: ResourceLocation) = renderTypeSolidTextureTest.apply(location)
-
     var solidInstance: ShaderInstance? = null
-    val testRenderStateShard = ShaderStateShard { solidInstance }
+    private val solidTextureShader = ShaderStateShard { solidInstance }
 
-    val renderTypeSolidTextureTest: Function<ResourceLocation, RenderType> = Util.memoize { location: ResourceLocation ->
-        val compositeState: RenderType.CompositeState = RenderType.CompositeState.builder()
-            .setLightmapState(LIGHTMAP)
-            .setShaderState(testRenderStateShard)
-            .setTextureState(TextureStateShard(location, false, true))
-            .createCompositeState(true)
-        RenderType.create(
-            "solid_texture",
-            DefaultVertexFormat.BLOCK,
-            VertexFormat.Mode.QUADS,
-            4194304,
-            true,
-            false,
-            compositeState
-        )
-    }
+    private val solidTextureRenderType: Function<ResourceLocation, RenderType> =
+        Util.memoize { location: ResourceLocation ->
+            val compositeState: RenderType.CompositeState = RenderType.CompositeState.builder()
+                .setLightmapState(LIGHTMAP)
+                .setShaderState(solidTextureShader)
+                .setTextureState(TextureStateShard(location, false, true))
+                .createCompositeState(true)
+            RenderType.create(
+                "solid_texture",
+                DefaultVertexFormat.BLOCK,
+                VertexFormat.Mode.QUADS,
+                4194304,
+                true,
+                false,
+                compositeState
+            )
+        }
 
-//    val renderTypeTextureTest: Function<ResourceLocation, RenderType> = Util.memoize { resourceLocation: ResourceLocation ->
-//        val compositeState = RenderType.CompositeState.builder()
-//            .setLightmapState(RenderStateShard.LIGHTMAP)
-//            .setShaderState(testRenderStateShard)
-//            .setTextureState(TextureStateShard(resourceLocation, false, false))
-//            .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
-//            .setOverlayState(RenderStateShard.OVERLAY)
-//            .createCompositeState(true)
-//        RenderType.create(
-//            "texture_test",
-//            DefaultVertexFormat.NEW_ENTITY,
-//            VertexFormat.Mode.QUADS,
-//            4194304,
-//            true,
-//            false,
-//            compositeState
-//        )
-//    }
-//
-//    val blockVertexFormat = VertexFormat.builder()
-//        .add("Position", VertexFormatElement.POSITION)
-//        .add("Color", VertexFormatElement.COLOR)
-//        .add("UV0", VertexFormatElement.UV0)
-//        .add("UV2", VertexFormatElement.UV2)
-//        .add("Normal", VertexFormatElement.NORMAL)
-//        .padding(1)
-//        .build()
+    /**
+     * Replica of [RenderType.solid] that takes in a [textureLocation]
+     */
+    fun solidTextured(textureLocation: ResourceLocation) = solidTextureRenderType.apply(textureLocation)
 }

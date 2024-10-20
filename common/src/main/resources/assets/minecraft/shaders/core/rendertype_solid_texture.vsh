@@ -26,5 +26,6 @@ void main() {
 
     vertexDistance = fog_distance(pos, FogShape);
     vertexColor = Color * minecraft_sample_lightmap(Sampler2, UV2);
-    texCoord0 = vec2(UV0.x * 64.0, UV0.y * 64.0);
+    // Use vec2(UV0.x * 64.0, UV0.y * 32.0); while in dev because prod is stupid for some reason.
+    texCoord0 = vec2(UV0.x * 256.0, UV0.y * 256.0);
 }
