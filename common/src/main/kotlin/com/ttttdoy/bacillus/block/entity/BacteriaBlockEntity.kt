@@ -21,6 +21,7 @@ import net.minecraft.world.Clearable
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.RenderShape
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
@@ -135,9 +136,10 @@ class BacteriaBlockEntity(
 
         val newBacteria = BacteriaBlockEntity(pos, germinationState)
         val consumeBlockState = level.getBlockState(pos)
-        newBacteria.consumedBlockState =
-            if (consumeBlockState.getShape(level, pos) != Shapes.block()) consumeBlockState
-            else null
+        if (consumeBlockState.renderShape == RenderShape.MODEL) {
+            val shape = consumeBlockState.getShape(level, pos)
+            if (shape != Shapes.block() && shape != Shapes.empty()) newBacteria.consumedBlockState = consumeBlockState
+        }
         newBacteria.cached = cached
         newBacteria.active = active--
         newBacteria.tickChance = (newBacteria.tickChance * max(
