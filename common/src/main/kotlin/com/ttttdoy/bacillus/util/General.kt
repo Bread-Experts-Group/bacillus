@@ -64,7 +64,7 @@ object General {
                 when(it) {
                     is BooleanProperty -> state = state.setValue(it, tag.getBoolean(it.name))
                     is IntegerProperty -> state = state.setValue(it, tag.getInt(it.name))
-                    is EnumProperty -> state = General::class.members.first { it.name == "setStateCrazy" }.call(
+                    is EnumProperty -> state = General::class.java.methods.first { it.name == "setStateCrazy" }.invoke(
                         General, state, it, it.valueClass.methods.first { it.name == "valueOf" }.invoke(null, tag.getString(it.name))
                     ) as BlockState
                     else -> println("D:" + it::class.qualifiedName)
