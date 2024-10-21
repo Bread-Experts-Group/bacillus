@@ -22,7 +22,7 @@ abstract class GameRendererMixin {
     private Map<String, ShaderInstance> shaders;
 
     @Inject(method = "reloadShaders", at = @At("TAIL"))
-    private void reloadShaders(ResourceProvider resourceProvider, CallbackInfo ci) {
+    private void reloadShaders(final ResourceProvider resourceProvider, final CallbackInfo ci) {
         try {
             final ShaderInstance solidTextureShader = new ShaderInstance(
                     resourceProvider,
@@ -31,7 +31,7 @@ abstract class GameRendererMixin {
             );
             ModRenderType.INSTANCE.setSolidInstance(solidTextureShader);
             shaders.put(solidTextureShader.getName(), solidTextureShader);
-        } catch (IOException exception) {
+        } catch (final IOException exception) {
             throw new RuntimeException("[BACILLUS] could not reload shaders", exception);
         }
     }

@@ -53,6 +53,8 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
 
     override fun newBlockEntity(blockPos: BlockPos, blockState: BlockState) = BacteriaBlockEntity(blockPos, blockState)
 
+    override fun propagatesSkylightDown(state: BlockState, level: BlockGetter, pos: BlockPos): Boolean = true
+
     override fun <T : BlockEntity> getTicker(
         level: Level,
         blockState: BlockState,

@@ -103,13 +103,15 @@ class BacteriaBlockEntity(
         cached?.let {
             if (it.first != null) compoundTag.putString(
                 "inputs",
-                it.first!!.joinToString("#") { block -> BuiltInRegistries.BLOCK.getKey(block).toString() })
+                (it.first ?: return@let).joinToString("#") { block ->
+                    BuiltInRegistries.BLOCK.getKey(block).toString()
+                })
             compoundTag.putString("outputs", BuiltInRegistries.BLOCK.getKey(it.second).toString())
         }
         compoundTag.putInt("active", active)
         compoundTag.putInt("grace", grace)
         if (consumedBlockState != null) CompoundTag().also {
-            consumedBlockState!!.serializeInto(it)
+            (consumedBlockState ?: return@also).serializeInto(it)
             compoundTag.put("consumedBlockState", it)
         }
         super.saveAdditional(compoundTag, provider)
@@ -117,13 +119,14 @@ class BacteriaBlockEntity(
 
     override fun loadAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
         val input =
-            compoundTag.getString("inputs").split("#").map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)) }.toSet()
+            compoundTag.getString("inputs").split("#")
+                .map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)) }.toSet()
         val output = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundTag.getString("outputs")))
         cached = input to output
         active = compoundTag.getInt("active")
         grace = compoundTag.getInt("grace")
         if (compoundTag.contains("consumedBlockState"))
-            consumedBlockState = compoundTag.getCompound("consumedBlockState")?.deserializeBlockState()
+            consumedBlockState = compoundTag.getCompound("consumedBlockState").deserializeBlockState()
         super.loadAdditional(compoundTag, provider)
     }
 
@@ -146,7 +149,11 @@ class BacteriaBlockEntity(
             1f,
             1 + noise((pos.x * 0.1).toFloat(), (pos.y * 0.1).toFloat(), (pos.z * 0.1).toFloat())
         )).roundToInt()
-        level.setBlock(pos, germinationState.setValue(BlockStateProperties.TRIGGERED, newBacteria.consumedBlockState != null), 2)
+        level.setBlock(
+            pos,
+            germinationState.setValue(BlockStateProperties.TRIGGERED, newBacteria.consumedBlockState != null),
+            2
+        )
         level.setBlockEntity(newBacteria)
 
         level.playSound(null, pos, SoundEvents.CHORUS_FLOWER_GROW, SoundSource.BLOCKS, 0.8f, 1f)
@@ -161,7 +168,9 @@ class BacteriaBlockEntity(
             setRemoved()
         } else {
             if (level.random.nextInt(tickChance) != 0) return
-            getNextPositionFiltered(level, blockState.block, blockPos, cache.first, cache.second)?.let { replace(level, it) }
+            getNextPositionFiltered(level, blockState.block, blockPos, cache.first, cache.second)?.let {
+                replace(level, it)
+            }
             grace--
         }
     }

@@ -3,6 +3,8 @@ package com.ttttdoy.bacillus.registry
 import com.ttttdoy.bacillus.Bacillus
 import com.ttttdoy.bacillus.block.BacteriaBlock
 import com.ttttdoy.bacillus.block.MustBlock
+import com.ttttdoy.bacillus.item.DestroyerItem
+import com.ttttdoy.bacillus.registry.ModItems.ITEM_REGISTRY
 import dev.architectury.registry.registries.DeferredRegister
 import dev.architectury.registry.registries.RegistrySupplier
 import net.minecraft.core.registries.Registries
@@ -10,7 +12,6 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
-import java.util.function.Supplier
 
 @Suppress("unused")
 object ModBlocks {
@@ -19,12 +20,14 @@ object ModBlocks {
     /**
      * @see BacteriaBlock
      */
-    val REPLACER: RegistrySupplier<BlockItem> = registerBlockItem("replacer", { BacteriaBlock() }, Item.Properties())
+    val REPLACER: RegistrySupplier<BlockItem> =
+        BLOCK_REGISTRY.registerBlockItem("replacer", { BacteriaBlock() }, Item.Properties())
 
     /**
      * @see BacteriaBlock
      */
-    val DESTROYER: RegistrySupplier<BlockItem> = registerBlockItem("destroyer", { BacteriaBlock() }, Item.Properties())
+    val DESTROYER: RegistrySupplier<BlockItem> =
+        BLOCK_REGISTRY.registerBlockItem("destroyer", { BacteriaBlock() }, { block -> DestroyerItem(block) })
 
     // todo textures.
     /**
@@ -32,17 +35,26 @@ object ModBlocks {
      * - Excludes: Bacteria, Air, blocks in the unreplaceable and/or unbreakable tag.
      */
     val EVERYTHING: RegistrySupplier<BlockItem> =
-        registerBlockItem("everything", { Block(BlockBehaviour.Properties.of()) }, Item.Properties())
+        BLOCK_REGISTRY.registerBlockItem("everything", { Block(BlockBehaviour.Properties.of()) }, Item.Properties())
 
     /**
      * @see MustBlock
      */
-    val MUST: RegistrySupplier<BlockItem> = registerBlockItem("must", { MustBlock() }, Item.Properties())
+    val MUST: RegistrySupplier<BlockItem> = BLOCK_REGISTRY.registerBlockItem("must", { MustBlock() }, Item.Properties())
 
-    private fun <T : Block> registerBlockItem(
-        id: String, block: Supplier<T>, properties: Item.Properties
-    ): RegistrySupplier<BlockItem> {
-        val blockSupplier: RegistrySupplier<Block> = BLOCK_REGISTRY.register(id, block)
-        return ModItems.ITEM_REGISTRY.register(id) { BlockItem(blockSupplier.get(), properties) }
+    private fun DeferredRegister<Block>.registerBlockItem(
+        id: String,
+        block: () -> Block,
+        properties: Item.Properties
+    ): RegistrySupplier<BlockItem> = this.register(id, block).let { blockSupply ->
+        ITEM_REGISTRY.register(id) { BlockItem(blockSupply.get(), properties) }
+    }
+
+    private fun DeferredRegister<Block>.registerBlockItem(
+        id: String,
+        block: () -> Block,
+        item: (block: Block) -> BlockItem
+    ): RegistrySupplier<BlockItem> = this.register(id, block).let { blockSupply ->
+        ITEM_REGISTRY.register(id) { item(blockSupply.get()) }
     }
 }

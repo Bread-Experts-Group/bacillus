@@ -2,14 +2,12 @@
 
 <b>[IOU for 1x mod information]</b>
 
----
-
 ## Todos
 
 - [ ] Slime mold
 - [ ] Mod configuration
 - [ ] Localized jammer item and jammer block
-- [ ] Destroyer bacteria as an in-inventory trash slot
+- [X] Destroyer bacteria as an in-inventory trash slot
 - [ ] Inventory for the bacteria blocks
     - Inventory is only kept once for a "line" of bacteria
         - all replicated bacteria point to the original block's inventory
@@ -23,8 +21,7 @@
 - [ ] Convert the everything block to an item, work on textures for said item
 - [ ] Bacteria fading to gray during it's lifetime
 - [ ] Make the patchouli book work
-
----
+- [X] Fix lighting not updating while using destroyer bacteria
 
 ## Credits
 

@@ -2,6 +2,7 @@ package com.ttttdoy.bacillus.client.render
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.math.Axis
+import com.ttttdoy.bacillus.Bacillus.modLocation
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacillus.registry.ModBlocks
 import com.ttttdoy.bacillus.registry.ModRenderType
@@ -10,7 +11,6 @@ import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import java.awt.Color
@@ -38,10 +38,8 @@ class BacteriaBlockRenderer(
         packedOverlay: Int
     ) {
         if (!blockEntity.blockState.getValue(BlockStateProperties.TRIGGERED)) return
-        val texture = ResourceLocation.fromNamespaceAndPath(
-            "bacillus",
-            "textures/block/${if (blockEntity.blockState.block == ModBlocks.DESTROYER.get().block) "destroyer" else "replacer"}.png"
-        )
+        val texture =
+            modLocation("textures/block/${if (blockEntity.blockState.block == ModBlocks.DESTROYER.get().block) "destroyer" else "replacer"}.png")
 
         blockEntity.consumedBlockState?.let {
             context.blockRenderDispatcher.modelRenderer.renderModel(

@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionResultHolder
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Rarity
 import net.minecraft.world.level.Level
 
 /**
@@ -15,7 +16,7 @@ import net.minecraft.world.level.Level
  * - When held in the main hand: pauses active bacteria
  * - When held in off-hand: kills nearby bacteria
  */
-class Jammer : Item(Properties()) {
+class Jammer : Item(Properties().stacksTo(1).rarity(Rarity.UNCOMMON)) {
     override fun use(
         level: Level,
         player: Player,
