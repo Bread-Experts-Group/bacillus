@@ -96,7 +96,7 @@ class BacteriaBlockEntity(
      * @author Miko Elbrecht
      * @since 1.0.0
      */
-    var grace = 400
+    var grace = 120
 
     override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
         cached?.let {
@@ -160,13 +160,13 @@ class BacteriaBlockEntity(
 
     fun tick(level: Level, pos: BlockPos) {
         val cache = cached ?: return
-        if ((active == -1 || GLOBAL_JAM_STATE) && !GLOBAL_KILL_STATE) return
-        if (grace > 0) grace--
+        if ((active == -1 || globalJamState) && !globalKillState) return
 
-        if (GLOBAL_KILL_STATE || grace == 0) {
+        if (globalKillState || grace == 0) {
             level.setBlock(pos, cache.second.defaultBlockState(), 2)
             setRemoved()
         } else if (active != 0) {
+            grace--
             if (level.random.nextInt(tickChance) != 0) return
             getNextPositionFiltered(level, blockState.block, blockPos, cache.first, cache.second)?.let {
                 replace(level, it)
@@ -175,7 +175,7 @@ class BacteriaBlockEntity(
     }
 
     companion object {
-        var GLOBAL_JAM_STATE = false
-        var GLOBAL_KILL_STATE = false
+        var globalJamState = false
+        var globalKillState = false
     }
 }
