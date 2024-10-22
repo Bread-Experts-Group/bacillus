@@ -143,15 +143,14 @@ class BacteriaBlockEntity(
             if (shape != Shapes.block() && shape != Shapes.empty()) newBacteria.consumedBlockState = consumeBlockState
         }
         newBacteria.cached = cached
-        newBacteria.active = active - 1
+        newBacteria.active = active
         newBacteria.tickChance = (newBacteria.tickChance * max(
             1f,
             1 + noise((pos.x * 0.1).toFloat(), (pos.y * 0.1).toFloat(), (pos.z * 0.1).toFloat())
         )).roundToInt()
-        level.setBlock(
+        level.setBlockAndUpdate(
             pos,
-            germinationState.setValue(BlockStateProperties.TRIGGERED, newBacteria.consumedBlockState != null),
-            2
+            germinationState.setValue(BlockStateProperties.TRIGGERED, newBacteria.consumedBlockState != null)
         )
         level.setBlockEntity(newBacteria)
 
@@ -162,10 +161,10 @@ class BacteriaBlockEntity(
         val cache = cached ?: return
         if ((active == -1 || globalJamState) && !globalKillState) return
 
-        if (globalKillState || grace == 0) {
-            level.setBlock(pos, cache.second.defaultBlockState(), 2)
+        if (globalKillState || active == 0 || grace == 0) {
+            level.setBlockAndUpdate(pos, cache.second.defaultBlockState())
             setRemoved()
-        } else if (active != 0) {
+        } else {
             grace--
             if (level.random.nextInt(tickChance) != 0) return
             getNextPositionFiltered(level, blockState.block, blockPos, cache.first, cache.second)?.let {
