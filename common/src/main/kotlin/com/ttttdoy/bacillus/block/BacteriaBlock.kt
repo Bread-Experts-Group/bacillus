@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import net.minecraft.core.BlockPos
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.BaseEntityBlock
@@ -60,16 +59,15 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         blockState: BlockState,
         blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T>? =
-        if (level is ServerLevel) createTickerHelper(
+        createTickerHelper(
             blockEntityType,
             ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()
-        ) { tLevel, tPos, _, tBlockEntity -> tBlockEntity.tick(tLevel as ServerLevel, tPos) }
-        else null
+        ) { tLevel, tPos, _, tBlockEntity -> tBlockEntity.tick(tLevel, tPos) }
 
     private fun start(level: Level, blockPos: BlockPos, blockState: BlockState) =
         level.getBlockEntity(blockPos)?.let { entity ->
             if (entity is BacteriaBlockEntity && entity.getIO(level)) {
-                entity.active = 500
+                entity.active = 5
                 level.setBlock(blockPos, blockState.setValue(BlockStateProperties.ENABLED, true), 2)
             }
         }

@@ -13,7 +13,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.phys.Vec3
 import java.awt.Color
+import java.text.DecimalFormat
 
 /**
  * Renderer for the Destroyer and Bacteria
@@ -25,6 +27,15 @@ class BacteriaBlockRenderer(
 ) : BlockEntityRenderer<BacteriaBlockEntity> {
     private val instance: Minecraft = Minecraft.getInstance()
     private val debugMode = false
+    private var pos = 2.5
+    private var formatter = DecimalFormat("#0.00")
+
+    /**
+     * Stops rendering this [BlockEntityRenderer] if [BlockStateProperties.TRIGGERED] isn't **true**.
+     * @since 1.2.0
+     */
+    override fun shouldRender(blockEntity: BacteriaBlockEntity, cameraPos: Vec3): Boolean =
+        blockEntity.blockState.getValue(BlockStateProperties.TRIGGERED)
 
     /**
      * Renders this [BlockEntityRenderer]
@@ -37,7 +48,9 @@ class BacteriaBlockRenderer(
         packedLight: Int,
         packedOverlay: Int
     ) {
-        if (!blockEntity.blockState.getValue(BlockStateProperties.TRIGGERED)) return
+        val formattedGrace = formatter.format(blockEntity.grace.toFloat() / 200f)
+        val timer = formattedGrace.toFloat()
+        val decay = if (blockEntity.active == 0) timer else 1f
         val texture =
             modLocation("textures/block/${if (blockEntity.blockState.block == ModBlocks.DESTROYER.get().block) "destroyer" else "replacer"}.png")
 
@@ -47,7 +60,7 @@ class BacteriaBlockRenderer(
                 bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
                 it,
                 instance.modelManager.blockModelShaper.getBlockModel(it),
-                1f, 1f, 1f,
+                decay, decay, decay,
                 packedLight, packedOverlay
             )
         }
@@ -55,15 +68,15 @@ class BacteriaBlockRenderer(
         if (!debugMode) return
         renderText(
             "active: ${blockEntity.active}",
-            0.5, 1.5, 0.5,
+            1.5,
             Color.WHITE.rgb,
             Color(0.0f, 0.0f, 0.0f, 0.5f).rgb,
             poseStack,
             bufferSource
         )
         renderText(
-            "grace: ${blockEntity.grace}",
-            0.5, 1.8, 0.5,
+            "grace: ${blockEntity.grace} | $formattedGrace",
+            1.8,
             Color.WHITE.rgb,
             Color(0f, 0f, 0f, 0.5f).rgb,
             poseStack,
@@ -71,7 +84,7 @@ class BacteriaBlockRenderer(
         )
         renderText(
             "output: ${blockEntity.cached?.second}",
-            0.5, 2.0, 0.5,
+            2.0,
             Color.WHITE.rgb,
             Color(0f, 0f, 0f, 0.5f).rgb,
             poseStack, bufferSource
@@ -80,7 +93,7 @@ class BacteriaBlockRenderer(
         blockEntity.consumedBlockState?.let {
             renderText(
                 "consumedBlockState: $it",
-                0.5, 2.3, 0.5,
+                2.3,
                 Color.WHITE.rgb,
                 Color(0f, 0f, 0f, 0.5f).rgb,
                 poseStack,
@@ -88,25 +101,22 @@ class BacteriaBlockRenderer(
             )
         }
 
-        var pos = 2.6
         blockEntity.cached?.first?.forEach { block: Block ->
             renderText(
                 "input: $block",
-                0.5, pos, 0.5,
+                pos,
                 Color.WHITE.rgb,
                 Color(0f, 0f, 0f, 0.5f).rgb,
                 poseStack, bufferSource
             )
             pos += 0.2
         }
-        pos = 2.2
+        pos = 2.5
     }
 
     private fun renderText(
         text: String,
-        x: Double,
         y: Double,
-        z: Double,
         color: Int,
         bgColor: Int,
         poseStack: PoseStack,
@@ -115,7 +125,7 @@ class BacteriaBlockRenderer(
         val player = instance.player ?: return
 
         poseStack.pushPose()
-        poseStack.translate(x, y, z)
+        poseStack.translate(0.5, y, 0.5)
         poseStack.mulPose(Axis.XN.rotationDegrees(180f))
         poseStack.mulPose(Axis.YN.rotationDegrees(180f))
         poseStack.mulPose(Axis.YN.rotationDegrees(-player.yHeadRot))

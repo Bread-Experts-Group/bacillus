@@ -14,7 +14,6 @@ import net.minecraft.network.protocol.Packet
 import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.sounds.SoundSource
 import net.minecraft.world.Clearable
@@ -88,7 +87,7 @@ class BacteriaBlockEntity(
      * Lower numbers will result in the block ticking more often, higher is less frequent.
      * @since 1.0.0
      */
-    var tickChance = 80
+    var tickChance = 55
 
     /**
      * Grace counter for the bacteria to spread.
@@ -97,7 +96,7 @@ class BacteriaBlockEntity(
      * @author Miko Elbrecht
      * @since 1.0.0
      */
-    var grace = 1
+    var grace = 400
 
     override fun saveAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
         cached?.let {
@@ -144,7 +143,7 @@ class BacteriaBlockEntity(
             if (shape != Shapes.block() && shape != Shapes.empty()) newBacteria.consumedBlockState = consumeBlockState
         }
         newBacteria.cached = cached
-        newBacteria.active = active--
+        newBacteria.active = active - 1
         newBacteria.tickChance = (newBacteria.tickChance * max(
             1f,
             1 + noise((pos.x * 0.1).toFloat(), (pos.y * 0.1).toFloat(), (pos.z * 0.1).toFloat())
@@ -159,24 +158,24 @@ class BacteriaBlockEntity(
         level.playSound(null, pos, SoundEvents.CHORUS_FLOWER_GROW, SoundSource.BLOCKS, 0.8f, 1f)
     }
 
-    fun tick(level: ServerLevel, pos: BlockPos) {
+    fun tick(level: Level, pos: BlockPos) {
         val cache = cached ?: return
-        if ((active == -1 || globalJamState) && !globalKillState) return
+        if ((active == -1 || GLOBAL_JAM_STATE) && !GLOBAL_KILL_STATE) return
+        if (grace > 0) grace--
 
-        if (globalKillState || grace < 0 || active == 0) {
+        if (GLOBAL_KILL_STATE || grace == 0) {
             level.setBlock(pos, cache.second.defaultBlockState(), 2)
             setRemoved()
-        } else {
+        } else if (active != 0) {
             if (level.random.nextInt(tickChance) != 0) return
             getNextPositionFiltered(level, blockState.block, blockPos, cache.first, cache.second)?.let {
                 replace(level, it)
             }
-            grace--
         }
     }
 
     companion object {
-        var globalJamState = false
-        var globalKillState = false
+        var GLOBAL_JAM_STATE = false
+        var GLOBAL_KILL_STATE = false
     }
 }
