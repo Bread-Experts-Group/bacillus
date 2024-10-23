@@ -1,0 +1,6 @@
+{
+  "parent": "bacillus:item/jammer",
+  "textures": {
+    "layer0": "bacillus:item/jammer_all"
+  }
+}

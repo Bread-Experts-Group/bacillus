@@ -11,6 +11,13 @@ architectury {
 allprojects {
     group = rootProject.maven_group
     version = rootProject.mod_version
+
+    repositories {
+        maven {
+            name = 'ParchmentMC'
+            url = 'https://maven.parchmentmc.org'
+        }
+    }
 }
 
 subprojects {
@@ -34,10 +41,6 @@ subprojects {
         // See https://docs.gradle.org/current/userguide/declaring_repositories.html
         // for more information about repositories.
 
-        maven {
-            name = 'ParchmentMC'
-            url = 'https://maven.parchmentmc.org'
-        }
         maven {
             // location of the maven that hosts JEI files since January 2023
             name = "Jared's maven"

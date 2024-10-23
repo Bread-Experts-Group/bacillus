@@ -1,6 +1,8 @@
 package com.ttttdoy.bacillus.client.render
 
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.PoseStack.Pose
+import com.mojang.blaze3d.vertex.VertexConsumer
 import com.mojang.math.Axis
 import com.ttttdoy.bacillus.Bacillus.modLocation
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
@@ -9,9 +11,16 @@ import com.ttttdoy.bacillus.registry.ModRenderType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.block.ModelBlockRenderer
+import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider
+import net.minecraft.client.resources.model.BakedModel
+import net.minecraft.core.Direction
+import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.phys.Vec3
 import java.awt.Color
@@ -29,6 +38,10 @@ class BacteriaBlockRenderer(
     private val debugMode = false
     private var pos = 2.5
     private var formatter = DecimalFormat("#0.00")
+
+    private val destroyerTexture = modLocation("textures/block/destroyer.png")
+    private val replacerTexture = modLocation("textures/block/replacer.png")
+    private val blankTexture = modLocation("textures/block/bacteria_blank.png")
 
     /**
      * Stops rendering this [BlockEntityRenderer] if [BlockStateProperties.TRIGGERED] isn't **true**.
@@ -52,15 +65,17 @@ class BacteriaBlockRenderer(
         val timer = formattedGrace.toFloat()
         val decay = if (blockEntity.active == 0) timer else 1f
         val texture =
-            modLocation("textures/block/${if (blockEntity.blockState.block == ModBlocks.DESTROYER.get().block) "destroyer" else "replacer"}.png")
+            if (blockEntity.blockState.block == ModBlocks.DESTROYER.get().block) destroyerTexture else replacerTexture
+
+        context.blockRenderDispatcher.getBlockModel(Blocks.HAY_BLOCK.defaultBlockState())
 
         blockEntity.consumedBlockState?.let {
-            context.blockRenderDispatcher.modelRenderer.renderModel(
+            renderBetterModel(
                 poseStack.last(),
                 bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
                 it,
-                instance.modelManager.blockModelShaper.getBlockModel(it),
-                decay, decay, decay,
+                context.blockRenderDispatcher.getBlockModel(it),
+                1f, 1f, 0f, 1f,
                 packedLight, packedOverlay
             )
         }
@@ -143,5 +158,68 @@ class BacteriaBlockRenderer(
             15728880
         )
         poseStack.popPose()
+    }
+
+    private fun renderBetterModel(
+        pose: Pose,
+        consumer: VertexConsumer,
+        state: BlockState?,
+        model: BakedModel,
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float,
+        packedLight: Int,
+        packedOverlay: Int
+    ) {
+        val random = RandomSource.create()
+        val long = 42L
+
+        for (direction: Direction in Direction.entries) {
+            random.setSeed(long)
+            renderBetterQuadList(
+                pose,
+                consumer,
+                red,
+                green,
+                blue,
+                alpha,
+                model.getQuads(state, direction, random),
+                packedLight,
+                packedOverlay
+            )
+        }
+
+        random.setSeed(long)
+        renderBetterQuadList(
+            pose,
+            consumer,
+            red,
+            green,
+            blue,
+            alpha,
+            model.getQuads(state, null, random),
+            packedLight,
+            packedOverlay
+        )
+    }
+
+    /**
+     * [ModelBlockRenderer.renderQuadList] with the tint check stripped out.
+     */
+    private fun renderBetterQuadList(
+        pose: Pose,
+        consumer: VertexConsumer,
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float,
+        quads: List<BakedQuad>,
+        packedLight: Int,
+        packedOverlay: Int
+    ) {
+        for (bakedQuad: BakedQuad in quads) {
+            consumer.putBulkData(pose, bakedQuad, red, green, blue, alpha, packedLight, packedOverlay)
+        }
     }
 }

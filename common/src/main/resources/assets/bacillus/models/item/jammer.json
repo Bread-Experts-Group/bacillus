@@ -2,5 +2,28 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "bacillus:item/jammer"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "bacillus:killing": 1,
+        "bacillus:jamming": 0
+      },
+      "model": "bacillus:item/jammer_killing"
+    },
+    {
+      "predicate": {
+        "bacillus:killing": 0,
+        "bacillus:jamming": 1
+      },
+      "model": "bacillus:item/jammer_jamming"
+    },
+    {
+      "predicate": {
+        "bacillus:killing": 1,
+        "bacillus:jamming": 1
+      },
+      "model": "bacillus:item/jammer_all"
+    }
+  ]
 }
