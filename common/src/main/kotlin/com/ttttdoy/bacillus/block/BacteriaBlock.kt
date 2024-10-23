@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.BaseEntityBlock
@@ -59,10 +60,11 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         blockState: BlockState,
         blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T>? =
-        createTickerHelper(
+        if (level is ServerLevel) createTickerHelper(
             blockEntityType,
             ModBlockEntityTypes.BACTERIA_BLOCK_ENTITY.get()
         ) { tLevel, tPos, _, tBlockEntity -> tBlockEntity.tick(tLevel, tPos) }
+        else null
 
     private fun start(level: Level, blockPos: BlockPos, blockState: BlockState) =
         level.getBlockEntity(blockPos)?.let { entity ->
@@ -99,8 +101,8 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
 
     override fun codec(): MapCodec<out BaseEntityBlock> = codec
     override fun getRenderShape(blockState: BlockState): RenderShape =
-        if (blockState.getValue(BlockStateProperties.TRIGGERED)) RenderShape.INVISIBLE
-        else RenderShape.MODEL
+        /*if (blockState.getValue(BlockStateProperties.TRIGGERED))*/ RenderShape.INVISIBLE
+        //else RenderShape.MODEL
 
     override fun hasDynamicShape(): Boolean = true
 

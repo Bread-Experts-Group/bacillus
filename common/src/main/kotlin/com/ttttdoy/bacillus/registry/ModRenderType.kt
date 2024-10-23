@@ -17,6 +17,8 @@ object ModRenderType {
         Util.memoize { location: ResourceLocation ->
             val compositeState: RenderType.CompositeState = RenderType.CompositeState.builder()
                 .setLightmapState(LIGHTMAP)
+                .setCullState(CULL)
+                .setTransparencyState(NO_TRANSPARENCY)
                 .setShaderState(solidTextureShader)
                 .setTextureState(TextureStateShard(location, false, true))
                 .createCompositeState(true)
