@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level
  * - When held in the main hand: pauses active bacteria
  * - When held in off-hand: kills nearby bacteria
  */
-class Jammer : Item(Properties().stacksTo(1).rarity(Rarity.UNCOMMON)) {
+class Jammer : Item(Properties().stacksTo(1).rarity(Rarity.RARE)) {
     override fun use(
         level: Level,
         player: Player,
@@ -28,8 +28,9 @@ class Jammer : Item(Properties().stacksTo(1).rarity(Rarity.UNCOMMON)) {
         } else {
             BacteriaBlockEntity.globalKillState = !BacteriaBlockEntity.globalKillState
         }
-        player.sendSystemMessage(
-            Component.literal("Jamming: ${BacteriaBlockEntity.globalJamState}, Killing: ${BacteriaBlockEntity.globalKillState}")
+        player.displayClientMessage(
+            Component.literal("Jamming: ${BacteriaBlockEntity.globalJamState}, Killing: ${BacteriaBlockEntity.globalKillState}"),
+            true
         )
         return InteractionResultHolder.success(player.getItemInHand(interactionHand))
     }

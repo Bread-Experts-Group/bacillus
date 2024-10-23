@@ -4,6 +4,7 @@
   "block.bacillus.must": "Must",
   "item.bacillus.jammer": "Bacteria Jammer",
   "item.bacillus.compacted_must": "Compacted Must",
+  "item.bacillus.localized_jammer": "Localized Jammer",
   "item.bacillus.destroyer.tooltip_1": "Can be used as a trash can!",
   "item.bacillus.destroyer.tooltip_2": "Right click items onto this destroyer to void them,",
   "item.bacillus.destroyer.tooltip_3": "or right click items while holding the destroyer to void them",
