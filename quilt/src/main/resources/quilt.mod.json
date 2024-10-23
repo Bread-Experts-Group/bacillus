@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "${group}",
+    "id": "bacillus",
+    "version": "${version}",
+    "metadata": {
+      "name": "Bacillus",
+      "description": "A rewrite of the original Bacteria mod by TeNNoX. \n http://tennoxmods.blogspot.com/p/bacteria-mod.html \n Textures from the Bacterium mod for 1.20.1 by InEqualMeasure. \n https://www.curseforge.com/minecraft/mc-mods/bacterium",
+      "contributors": {
+        "Logan McLean (ttttdoy)": "Developer",
+        "Miko Elbrecht (ATPStorages)": "Developer"
+      },
+      "contact": {
+        "homepage": "https://javart.zip/p/bacillus",
+        "sources": "https://github.com/Bread-Experts-Group/bacillus",
+        "issues": "https://github.com/Bread-Experts-Group/bacillus/issues"
+      },
+      "license": "LGPL-2.1",
+      "icon": "assets/bacillus/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": [
+        "org.bread_experts_group.bacillus.quilt.BacillusQuilt"
+      ]
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.27.0-beta.1"
+      },
+      {
+        "id": "minecraft",
+        "versions": ">=1.21"
+      }
+    ]
+  },
+  "minecraft": {
+    "environment": "*"
+  }
+}

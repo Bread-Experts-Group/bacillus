@@ -21,9 +21,9 @@ import net.minecraft.world.level.redstone.Orientation
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
-import org.bread_experts_group.bacillus.Bacillus
 import org.bread_experts_group.bacillus.block.entity.BacteriaBlockEntity
 import org.bread_experts_group.bacillus.registry.ModBlockEntityTypes
+import org.bread_experts_group.bacillus.Bacillus
 
 /**
  * ### Main bacteria block class for the destroyer and replacer.

@@ -11,9 +11,9 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.Rarity
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.AABB
-import org.bread_experts_group.bacillus.Bacillus
 import org.bread_experts_group.bacillus.block.entity.BacteriaBlockEntity
 import org.bread_experts_group.bacillus.registry.ModBlocks
+import org.bread_experts_group.bacillus.Bacillus
 
 class LocalizedJammer : Item(
     Properties().stacksTo(1).rarity(Rarity.UNCOMMON)

@@ -5,11 +5,13 @@
   "name": "Bacillus",
   "description": "A rewrite of the original Bacteria mod by TeNNoX. \n http://tennoxmods.blogspot.com/p/bacteria-mod.html \n Textures from the Bacterium mod for 1.20.1 by InEqualMeasure. \n https://www.curseforge.com/minecraft/mc-mods/bacterium",
   "authors": [
-    "Logan Mclean (ttttdoy)",
+    "Logan McLean (ttttdoy)",
     "Miko Elbrecht (ATPStorages)"
   ],
   "contact": {
-    "homepage": ""
+    "homepage": "https://javart.zip/p/bacillus",
+    "sources": "https://github.com/Bread-Experts-Group/bacillus",
+    "issues": "https://github.com/Bread-Experts-Group/bacillus/issues"
   },
   "license": "LGPL-2.1",
   "icon": "assets/bacillus/icon.png",
