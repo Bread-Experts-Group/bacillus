@@ -4,7 +4,7 @@
 
 ## 1.21.2 fixes
 
-- [ ] Rewrite the shader code and mixin (mixin and render type code are commented out to stop the compiler from erroring)
+- [X] Rewrite the shader code (just had to adjust some of it actually)
 - [ ] uncomment BER code after fixing said shader code
 - [ ] fix save/load additional from throwing a network error (No Value Present)
 - [ ] make a cleaner implementation of registering block and item ids (they're just glued onto the current entries and it's bad.)
