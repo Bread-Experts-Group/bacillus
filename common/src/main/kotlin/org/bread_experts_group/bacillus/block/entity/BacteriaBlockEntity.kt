@@ -117,7 +117,6 @@ class BacteriaBlockEntity(
         super.saveAdditional(compoundTag, provider)
     }
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun loadAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
         val input =
             compoundTag.getString("inputs").split("#").map { getBlock(ResourceLocation.tryParse(it), Blocks.DIRT) }.toSet()
@@ -130,7 +129,7 @@ class BacteriaBlockEntity(
         super.loadAdditional(compoundTag, provider)
     }
 
-    val germinationState =
+    private val germinationState: BlockState =
         (if (blockState.block == ModBlocks.DESTROYER.get().block) ModBlocks.DESTROYER.get().block.defaultBlockState()
         else ModBlocks.REPLACER.get().block.defaultBlockState()).setValue(BlockStateProperties.ENABLED, true)
 
