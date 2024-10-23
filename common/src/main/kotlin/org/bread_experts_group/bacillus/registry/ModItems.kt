@@ -3,11 +3,11 @@ package org.bread_experts_group.bacillus.registry
 import dev.architectury.registry.registries.DeferredRegister
 import dev.architectury.registry.registries.RegistrySupplier
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.Item
 import org.bread_experts_group.bacillus.Bacillus
 import org.bread_experts_group.bacillus.item.Jammer
 import org.bread_experts_group.bacillus.item.LocalizedJammer
+import org.bread_experts_group.bacillus.util.General.setId
 
 @Suppress("unused")
 object ModItems {
@@ -19,11 +19,6 @@ object ModItems {
 
     val JAMMER: RegistrySupplier<Item> = ITEM_REGISTRY.register("jammer") { Jammer() }
     val LOCALIZED_JAMMER: RegistrySupplier<Item> = ITEM_REGISTRY.register("localized_jammer") { LocalizedJammer() }
-    val COMPACTED_MUST: RegistrySupplier<Item> = ITEM_REGISTRY.register("compacted_must") {
-        Item(
-            Item.Properties().setId(
-                ResourceKey.create(Registries.ITEM, Bacillus.modLocation("compacted_must"))
-            )
-        )
-    }
+    val COMPACTED_MUST: RegistrySupplier<Item> =
+        ITEM_REGISTRY.register("compacted_must") { Item(Item.Properties().setId("compacted_must")) }
 }

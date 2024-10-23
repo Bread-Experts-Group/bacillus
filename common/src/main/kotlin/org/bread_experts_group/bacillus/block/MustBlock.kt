@@ -1,8 +1,6 @@
 package org.bread_experts_group.bacillus.block
 
 import net.minecraft.core.BlockPos
-import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
@@ -15,11 +13,9 @@ import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 import org.bread_experts_group.bacillus.util.General
-import org.bread_experts_group.bacillus.Bacillus
+import org.bread_experts_group.bacillus.util.General.setId
 
-class MustBlock :
-    Block(Properties.ofFullCopy(Blocks.SPONGE).setId(ResourceKey.create(Registries.BLOCK, Bacillus.modLocation("must")))),
-    BonemealableBlock {
+class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE).setId("must")), BonemealableBlock {
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(AGE)

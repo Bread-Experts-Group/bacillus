@@ -3,7 +3,6 @@ package org.bread_experts_group.bacillus.registry
 import dev.architectury.registry.registries.DeferredRegister
 import dev.architectury.registry.registries.RegistrySupplier
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
@@ -12,6 +11,7 @@ import org.bread_experts_group.bacillus.Bacillus
 import org.bread_experts_group.bacillus.block.BacteriaBlock
 import org.bread_experts_group.bacillus.block.MustBlock
 import org.bread_experts_group.bacillus.item.DestroyerItem
+import org.bread_experts_group.bacillus.util.General.setId
 
 @Suppress("unused")
 object ModBlocks {
@@ -21,11 +21,7 @@ object ModBlocks {
      * @see BacteriaBlock
      */
     val REPLACER: RegistrySupplier<BlockItem> =
-        BLOCK_REGISTRY.registerBlockItem(
-            "replacer",
-            { BacteriaBlock("replacer") },
-            Item.Properties().useBlockDescriptionPrefix()
-        )
+        BLOCK_REGISTRY.registerBlockItem("replacer", { BacteriaBlock("replacer") }, Item.Properties())
 
     /**
      * @see BacteriaBlock
@@ -38,23 +34,17 @@ object ModBlocks {
      * Activating a destroyer block with this above, it marks every block in the game as destroyable.
      * - Excludes: Bacteria, Air, blocks in the unreplaceable and/or unbreakable tag.
      */
-    val EVERYTHING: RegistrySupplier<BlockItem> =
-        BLOCK_REGISTRY.registerBlockItem(
-            "everything",
-            {
-                Block(
-                    BlockBehaviour.Properties.of()
-                        .setId(ResourceKey.create(Registries.BLOCK, Bacillus.modLocation("everything")))
-                )
-            },
-            Item.Properties().useBlockDescriptionPrefix()
-        )
+    val EVERYTHING: RegistrySupplier<BlockItem> = BLOCK_REGISTRY.registerBlockItem(
+        "everything",
+        { Block(BlockBehaviour.Properties.of().setId("everything")) },
+        Item.Properties()
+    )
 
     /**
      * @see MustBlock
      */
     val MUST: RegistrySupplier<BlockItem> =
-        BLOCK_REGISTRY.registerBlockItem("must", { MustBlock() }, Item.Properties().useBlockDescriptionPrefix())
+        BLOCK_REGISTRY.registerBlockItem("must", { MustBlock() }, Item.Properties())
 
     private fun DeferredRegister<Block>.registerBlockItem(
         id: String,
@@ -62,9 +52,7 @@ object ModBlocks {
         properties: Item.Properties
     ): RegistrySupplier<BlockItem> = this.register(id, block).let { blockSupply ->
         ModItems.ITEM_REGISTRY.register(id) {
-            BlockItem(
-                blockSupply.get(),
-                properties.also { it.setId(ResourceKey.create(Registries.ITEM, Bacillus.modLocation(id))) })
+            BlockItem(blockSupply.get(), properties.setId(id).useBlockDescriptionPrefix())
         }
     }
 

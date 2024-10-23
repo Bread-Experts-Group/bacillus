@@ -2,11 +2,15 @@ package org.bread_experts_group.bacillus.util
 
 import net.minecraft.core.*
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.minecraft.world.level.block.state.properties.EnumProperty
@@ -14,6 +18,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.block.state.properties.Property
 import net.minecraft.world.level.chunk.LevelChunk
 import org.apache.logging.log4j.LogManager
+import org.bread_experts_group.bacillus.Bacillus
 import kotlin.jvm.optionals.getOrNull
 
 // THIS CLASS IS HAZARDOUS
@@ -53,6 +58,18 @@ object General {
         }
         return null
     }
+
+    /**
+     * Convenience function for setting item ids.
+     */
+    fun Item.Properties.setId(id: String): Item.Properties =
+        this.setId(ResourceKey.create(Registries.ITEM, Bacillus.modLocation(id)))
+
+    /**
+     * Convenience function for setting block ids.
+     */
+    fun BlockBehaviour.Properties.setId(id: String): BlockBehaviour.Properties =
+        this.setId(ResourceKey.create(Registries.BLOCK, Bacillus.modLocation(id)))
 
     fun getBlock(location: ResourceLocation) =
         BuiltInRegistries.BLOCK.get(location).getOrNull()?.let { if (it.isBound) it.value() else null }

@@ -2,8 +2,6 @@ package org.bread_experts_group.bacillus.block
 
 import com.mojang.serialization.MapCodec
 import net.minecraft.core.BlockPos
-import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
@@ -23,7 +21,7 @@ import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 import org.bread_experts_group.bacillus.block.entity.BacteriaBlockEntity
 import org.bread_experts_group.bacillus.registry.ModBlockEntityTypes
-import org.bread_experts_group.bacillus.Bacillus
+import org.bread_experts_group.bacillus.util.General.setId
 
 /**
  * ### Main bacteria block class for the destroyer and replacer.
@@ -40,11 +38,7 @@ import org.bread_experts_group.bacillus.Bacillus
  * @since 1.0.0
  */
 class BacteriaBlock(id: String) : BaseEntityBlock(
-    Properties.ofFullCopy(Blocks.SPONGE).instabreak().noOcclusion().setId(
-        ResourceKey.create(
-            Registries.BLOCK, Bacillus.modLocation(id)
-        )
-    )
+    Properties.ofFullCopy(Blocks.SPONGE).instabreak().noOcclusion().setId(id)
 ) {
     val codec: MapCodec<BacteriaBlock> = simpleCodec { this }
 
