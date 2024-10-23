@@ -1,7 +1,7 @@
 #version 150
 
-#moj_import <light.glsl>
-#moj_import <fog.glsl>
+#moj_import <minecraft:light.glsl>
+#moj_import <minecraft:fog.glsl>
 
 in vec3 Position;
 in vec4 Color;
@@ -13,7 +13,7 @@ uniform sampler2D Sampler2;
 
 uniform mat4 ModelViewMat;
 uniform mat4 ProjMat;
-uniform vec3 ChunkOffset;
+uniform vec3 ModelOffset;
 uniform int FogShape;
 
 out float vertexDistance;
@@ -21,11 +21,11 @@ out vec4 vertexColor;
 out vec2 texCoord0;
 
 void main() {
-    vec3 pos = Position + ChunkOffset;
+    vec3 pos = Position + ModelOffset;
     gl_Position = ProjMat * ModelViewMat * vec4(pos, 1.0);
 
     vertexDistance = fog_distance(pos, FogShape);
     vertexColor = Color * minecraft_sample_lightmap(Sampler2, UV2);
-    // Fabric UVs.
-    texCoord0 = vec2(UV0.x * 64.0, UV0.y * 32.0);
+    // NeoForge UVs.
+    texCoord0 = vec2(UV0.x * 256.0, UV0.y * 256.0);
 }

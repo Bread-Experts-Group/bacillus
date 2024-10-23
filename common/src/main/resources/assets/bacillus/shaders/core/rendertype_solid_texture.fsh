@@ -1,6 +1,6 @@
 #version 150
 
-#moj_import <fog.glsl>
+#moj_import <minecraft:fog.glsl>
 
 uniform sampler2D Sampler0;
 
@@ -25,5 +25,10 @@ vec3 hsv2rgb(vec3 c)
 void main() {
     vec3 rgb = hsv2rgb(vec3(vertexDistance, 1.0, 1.0));
     vec4 color = texture(Sampler0, texCoord0) * vertexColor * ColorModulator;
+    #ifdef ALPHA_CUTOUT
+    if (color.a < ALPHA_CUTOUT) {
+        discard;
+    }
+    #endif
     fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor) /** vec4(rgb.x, rgb.y, rgb.z, 1.0)*/;
 }

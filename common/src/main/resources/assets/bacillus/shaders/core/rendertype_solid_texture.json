@@ -1,6 +1,6 @@
 {
-  "vertex": "rendertype_solid_texture",
-  "fragment": "rendertype_solid_texture",
+  "vertex": "bacillus:core/rendertype_solid_texture",
+  "fragment": "bacillus:core/rendertype_solid_texture",
   "samplers": [
     {
       "name": "Sampler0"
@@ -57,7 +57,7 @@
       ]
     },
     {
-      "name": "ChunkOffset",
+      "name": "ModelOffset",
       "type": "float",
       "count": 3,
       "values": [
