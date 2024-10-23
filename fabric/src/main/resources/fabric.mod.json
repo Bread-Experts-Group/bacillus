@@ -16,10 +16,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.ttttdoy.bacillus.fabric.BacillusFabric"
+      "org.bread_experts_group.bacillus.fabric.BacillusFabric"
     ],
     "client": [
-      "com.ttttdoy.bacillus.fabric.client.BacillusFabricClient"
+      "org.bread_experts_group.bacillus.fabric.client.BacillusFabricClient"
     ]
   },
   "mixins": [
