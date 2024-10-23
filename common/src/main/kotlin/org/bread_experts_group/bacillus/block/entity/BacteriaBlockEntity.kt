@@ -119,11 +119,9 @@ class BacteriaBlockEntity(
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun loadAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
-        // todo the getBlock() might be giving the input and outputs no value to work with, need to look into it
         val input =
-            compoundTag.getString("inputs").split("#")
-                .map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)).getBlock() }.toSet()
-        val output = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundTag.getString("outputs"))).getBlock()
+            compoundTag.getString("inputs").split("#").map { getBlock(ResourceLocation.tryParse(it), Blocks.DIRT) }.toSet()
+        val output = getBlock(ResourceLocation.tryParse(compoundTag.getString("outputs")), Blocks.DIRT)
         cached = input to output
         active = compoundTag.getInt("active")
         grace = compoundTag.getInt("grace")

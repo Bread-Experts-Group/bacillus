@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BooleanProperty
 import net.minecraft.world.level.block.state.properties.EnumProperty
@@ -13,7 +14,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.block.state.properties.Property
 import net.minecraft.world.level.chunk.LevelChunk
 import org.apache.logging.log4j.LogManager
-import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 // THIS CLASS IS HAZARDOUS
 object General {
@@ -53,7 +54,10 @@ object General {
         return null
     }
 
-    fun Optional<Holder.Reference<Block>>.getBlock() = this.get().unwrap().right().get()
+    fun getBlock(location: ResourceLocation) =
+        BuiltInRegistries.BLOCK.get(location).getOrNull()?.let { if (it.isBound) it.value() else null }
+
+    fun getBlock(location: ResourceLocation?, or: Block) = location?.let { getBlock(location) ?: or } ?: or
 
     fun BlockState.serializeInto(tag: CompoundTag) {
         tag.putString("block", BuiltInRegistries.BLOCK.getKey(this.block).toString())
@@ -70,9 +74,7 @@ object General {
     }
 
     fun CompoundTag.deserializeBlockState(): BlockState {
-        var state =
-            BuiltInRegistries.BLOCK.get(ResourceLocation.parse(this.getString("block"))).getBlock().defaultBlockState()
-//        var state = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(this.getString("block")))
+        var state = getBlock(ResourceLocation.tryParse(this.getString("block")), Blocks.DIRT).defaultBlockState()
         this.getCompound("properties").let { tag ->
             state.properties.forEach {
                 when (it) {
