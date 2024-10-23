@@ -39,10 +39,10 @@ import net.minecraft.world.phys.shapes.VoxelShape
  * @see BacteriaBlockEntity.grace
  * @since 1.0.0
  */
-class BacteriaBlock : BaseEntityBlock(
+class BacteriaBlock(id: String) : BaseEntityBlock(
     Properties.ofFullCopy(Blocks.SPONGE).instabreak().noOcclusion().setId(
         ResourceKey.create(
-            Registries.BLOCK, modLocation("bacteria")
+            Registries.BLOCK, modLocation(id)
         )
     )
 ) {

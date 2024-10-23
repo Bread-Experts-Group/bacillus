@@ -2,6 +2,7 @@ package com.ttttdoy.bacillus.registry
 
 import com.ttttdoy.bacillus.Bacillus.modLocation
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
+import dev.architectury.event.events.common.LifecycleEvent
 import dev.architectury.registry.item.ItemPropertiesRegistry
 import org.apache.logging.log4j.LogManager
 
@@ -24,7 +25,9 @@ object Registry {
         logger.info("Registering creative tabs")
         ModCreativeTab.CREATIVE_TAB_REGISTRY.register()
 
-        registerItemProperties()
+        LifecycleEvent.SETUP.register {
+            registerItemProperties()
+        }
     }
 
     fun registerItemProperties() {

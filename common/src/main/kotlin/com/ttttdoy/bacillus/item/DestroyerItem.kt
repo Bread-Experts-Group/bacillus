@@ -19,7 +19,10 @@ import net.minecraft.world.level.block.Block
 import org.apache.logging.log4j.LogManager
 
 class DestroyerItem(block: Block) :
-    BlockItem(block, Properties().setId(ResourceKey.create(Registries.ITEM, modLocation("destroyer")))) {
+    BlockItem(
+        block,
+        Properties().setId(ResourceKey.create(Registries.ITEM, modLocation("destroyer"))).useBlockDescriptionPrefix()
+    ) {
     val logger = LogManager.getLogger()
 
     override fun overrideOtherStackedOnMe(

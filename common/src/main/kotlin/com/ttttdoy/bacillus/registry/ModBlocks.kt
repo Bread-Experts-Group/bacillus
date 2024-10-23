@@ -23,13 +23,17 @@ object ModBlocks {
      * @see BacteriaBlock
      */
     val REPLACER: RegistrySupplier<BlockItem> =
-        BLOCK_REGISTRY.registerBlockItem("replacer", { BacteriaBlock() }, Item.Properties())
+        BLOCK_REGISTRY.registerBlockItem(
+            "replacer",
+            { BacteriaBlock("replacer") },
+            Item.Properties().useBlockDescriptionPrefix()
+        )
 
     /**
      * @see BacteriaBlock
      */
     val DESTROYER: RegistrySupplier<BlockItem> =
-        BLOCK_REGISTRY.registerBlockItem("destroyer", { BacteriaBlock() }, { block -> DestroyerItem(block) })
+        BLOCK_REGISTRY.registerBlockItem("destroyer", { BacteriaBlock("destroyer") }, { block -> DestroyerItem(block) })
 
     // todo textures.
     /**
@@ -45,13 +49,14 @@ object ModBlocks {
                         .setId(ResourceKey.create(Registries.BLOCK, modLocation("everything")))
                 )
             },
-            Item.Properties()
+            Item.Properties().useBlockDescriptionPrefix()
         )
 
     /**
      * @see MustBlock
      */
-    val MUST: RegistrySupplier<BlockItem> = BLOCK_REGISTRY.registerBlockItem("must", { MustBlock() }, Item.Properties())
+    val MUST: RegistrySupplier<BlockItem> =
+        BLOCK_REGISTRY.registerBlockItem("must", { MustBlock() }, Item.Properties().useBlockDescriptionPrefix())
 
     private fun DeferredRegister<Block>.registerBlockItem(
         id: String,
