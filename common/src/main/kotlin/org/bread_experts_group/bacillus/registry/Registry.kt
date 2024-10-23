@@ -24,7 +24,9 @@ object Registry {
         ModBlockEntityTypes.BLOCK_ENTITY_TYPE_REGISTRY.register()
         logger.info("Registering creative tabs")
         ModCreativeTab.CREATIVE_TAB_REGISTRY.register()
+    }
 
+    fun registerAllClient() {
         LifecycleEvent.SETUP.register {
             registerItemProperties()
         }
@@ -36,13 +38,13 @@ object Registry {
             ModItems.JAMMER.get(),
             Bacillus.modLocation("killing")
         ) { stack, _, livingEntity, _ ->
-            if (livingEntity != null && BacteriaBlockEntity.Companion.globalKillState) 1f else 0f
+            if (livingEntity != null && BacteriaBlockEntity.globalKillState) 1f else 0f
         }
         ItemPropertiesRegistry.register(
             ModItems.JAMMER.get(),
             Bacillus.modLocation("jamming")
         ) { stack, _, livingEntity, _ ->
-            if (livingEntity != null && BacteriaBlockEntity.Companion.globalJamState) 1f else 0f
+            if (livingEntity != null && BacteriaBlockEntity.globalJamState) 1f else 0f
         }
     }
 }
