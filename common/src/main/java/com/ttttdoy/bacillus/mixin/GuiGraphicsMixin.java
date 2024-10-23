@@ -8,6 +8,7 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
@@ -20,11 +21,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.awt.*;
+import java.util.function.Function;
+
 @Mixin(GuiGraphics.class)
 abstract class GuiGraphicsMixin {
-    @Shadow
-    public abstract void blit(ResourceLocation atlasLocation, int x, int y, int blitOffset, float uOffset, float vOffset, int uWidth, int vHeight, int textureWidth, int textureHeight);
-
     @Shadow
     @Final
     private PoseStack pose;
@@ -32,6 +33,8 @@ abstract class GuiGraphicsMixin {
     @Shadow
     @Final
     private Minecraft minecraft;
+
+    @Shadow public abstract void blit(Function<ResourceLocation, RenderType> function, ResourceLocation resourceLocation, int i, int j, float f, float g, int k, int l, int m, int n, int o);
 
     @Unique
     private final ResourceLocation bacillus$location = Bacillus.INSTANCE.modLocation(new String[]{"textures", "icon", "trash_can.png"}, false);
@@ -54,7 +57,7 @@ abstract class GuiGraphicsMixin {
             this.pose.translate((float) x, (float) y, 200.0F);
             RenderSystem.enableBlend();
             this.pose.scale(0.50F, 0.50F, 0.50F);
-            this.blit(bacillus$location, 0, 0, 0, 0, 0, 16, 16, 16, 16);
+            this.blit(RenderType::guiTextured, bacillus$location, 0, 0, 0.0f, 0.0f, 16, 16, 16, 16, Color.WHITE.getRGB());
             RenderSystem.disableBlend();
             this.pose.popPose();
         }

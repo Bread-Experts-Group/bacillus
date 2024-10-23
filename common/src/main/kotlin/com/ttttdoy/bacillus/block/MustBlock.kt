@@ -1,7 +1,10 @@
 package com.ttttdoy.bacillus.block
 
+import com.ttttdoy.bacillus.Bacillus.modLocation
 import com.ttttdoy.bacillus.util.General.getNextPositionFiltered
 import net.minecraft.core.BlockPos
+import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
@@ -14,7 +17,9 @@ import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.block.state.properties.IntegerProperty
 
-class MustBlock : Block(Properties.ofFullCopy(Blocks.SPONGE)), BonemealableBlock {
+class MustBlock :
+    Block(Properties.ofFullCopy(Blocks.SPONGE).setId(ResourceKey.create(Registries.BLOCK, modLocation("must")))),
+    BonemealableBlock {
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(AGE)

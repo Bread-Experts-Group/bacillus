@@ -1,9 +1,12 @@
 package com.ttttdoy.bacillus.item
 
+import com.ttttdoy.bacillus.Bacillus.modLocation
 import com.ttttdoy.bacillus.Bacillus.modTranslatable
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceKey
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.world.entity.SlotAccess
 import net.minecraft.world.entity.player.Player
@@ -15,7 +18,8 @@ import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.level.block.Block
 import org.apache.logging.log4j.LogManager
 
-class DestroyerItem(block: Block) : BlockItem(block, Properties()) {
+class DestroyerItem(block: Block) :
+    BlockItem(block, Properties().setId(ResourceKey.create(Registries.ITEM, modLocation("destroyer")))) {
     val logger = LogManager.getLogger()
 
     override fun overrideOtherStackedOnMe(

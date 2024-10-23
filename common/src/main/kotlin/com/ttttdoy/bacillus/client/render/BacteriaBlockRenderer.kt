@@ -7,7 +7,6 @@ import com.mojang.math.Axis
 import com.ttttdoy.bacillus.Bacillus.modLocation
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacillus.registry.ModBlocks
-import com.ttttdoy.bacillus.registry.ModRenderType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.renderer.MultiBufferSource
@@ -19,7 +18,6 @@ import net.minecraft.client.resources.model.BakedModel
 import net.minecraft.core.Direction
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.block.Block
-import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import java.awt.Color
@@ -64,39 +62,39 @@ class BacteriaBlockRenderer(
         val texture =
             if (blockEntity.blockState.block == ModBlocks.DESTROYER.get().block) destroyerTexture else replacerTexture
 
-        blockEntity.consumedBlockState?.let {
-            renderBetterModel(
-                poseStack.last(),
-                bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
-                it,
-                context.blockRenderDispatcher.getBlockModel(it),
-                1f, 1f, 0f, 1f,
-                packedLight, packedOverlay
-            )
-        }
-
-        if (blockEntity.blockState.getValue(BlockStateProperties.TRIGGERED)) {
-
-            blockEntity.consumedBlockState?.let {
-                context.blockRenderDispatcher.modelRenderer.renderModel(
-                    poseStack.last(),
-                    bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
-                    it,
-                    context.blockRenderDispatcher.getBlockModel(it),
-                    decay, decay, decay,
-                    packedLight, packedOverlay
-                )
-            }
-        } else {
-            context.blockRenderDispatcher.modelRenderer.renderModel(
-                poseStack.last(),
-                bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
-                blockEntity.blockState,
-                context.blockRenderDispatcher.getBlockModel(blockEntity.blockState),
-                decay, decay, decay,
-                packedLight, packedOverlay
-            )
-        }
+//        blockEntity.consumedBlockState?.let {
+//            renderBetterModel(
+//                poseStack.last(),
+//                bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
+//                it,
+//                context.blockRenderDispatcher.getBlockModel(it),
+//                1f, 1f, 0f, 1f,
+//                packedLight, packedOverlay
+//            )
+//        }
+//
+//        if (blockEntity.blockState.getValue(BlockStateProperties.TRIGGERED)) {
+//
+//            blockEntity.consumedBlockState?.let {
+//                context.blockRenderDispatcher.modelRenderer.renderModel(
+//                    poseStack.last(),
+//                    bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
+//                    it,
+//                    context.blockRenderDispatcher.getBlockModel(it),
+//                    decay, decay, decay,
+//                    packedLight, packedOverlay
+//                )
+//            }
+//        } else {
+//            context.blockRenderDispatcher.modelRenderer.renderModel(
+//                poseStack.last(),
+//                bufferSource.getBuffer(ModRenderType.solidTextured(texture)),
+//                blockEntity.blockState,
+//                context.blockRenderDispatcher.getBlockModel(blockEntity.blockState),
+//                decay, decay, decay,
+//                packedLight, packedOverlay
+//            )
+//        }
 
         if (!debugMode) return
         renderText(

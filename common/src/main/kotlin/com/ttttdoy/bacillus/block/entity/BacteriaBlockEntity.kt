@@ -4,9 +4,11 @@ import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import com.ttttdoy.bacillus.registry.ModBlockTags
 import com.ttttdoy.bacillus.registry.ModBlocks
 import com.ttttdoy.bacillus.util.General.deserializeBlockState
+import com.ttttdoy.bacillus.util.General.getBlock
 import com.ttttdoy.bacillus.util.General.getNextPositionFiltered
 import com.ttttdoy.bacillus.util.General.serializeInto
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Holder
 import net.minecraft.core.HolderLookup
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.nbt.CompoundTag
@@ -26,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.phys.shapes.Shapes
 import org.joml.SimplexNoise.noise
+import java.util.*
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -117,10 +120,11 @@ class BacteriaBlockEntity(
     }
 
     override fun loadAdditional(compoundTag: CompoundTag, provider: HolderLookup.Provider) {
+        // todo the getBlock() might be giving the input and outputs no value to work with, need to look into it
         val input =
             compoundTag.getString("inputs").split("#")
-                .map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)) }.toSet()
-        val output = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundTag.getString("outputs")))
+                .map { BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(it)).getBlock() }.toSet()
+        val output = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(compoundTag.getString("outputs"))).getBlock()
         cached = input to output
         active = compoundTag.getInt("active")
         grace = compoundTag.getInt("grace")

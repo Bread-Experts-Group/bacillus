@@ -32,6 +32,7 @@ subprojects {
 
     loom {
         silentMojangMappingsLicense()
+        accessWidenerPath = project(':common').file('src/main/resources/bacillus.accesswidener')
     }
 
     repositories {

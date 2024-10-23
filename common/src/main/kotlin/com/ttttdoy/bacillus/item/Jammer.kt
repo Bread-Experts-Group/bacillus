@@ -1,12 +1,14 @@
 package com.ttttdoy.bacillus.item
 
+import com.ttttdoy.bacillus.Bacillus.modLocation
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceKey
 import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Rarity
 import net.minecraft.world.level.Level
 
@@ -16,13 +18,15 @@ import net.minecraft.world.level.Level
  * - When held in the main hand: pauses active bacteria
  * - When held in off-hand: kills nearby bacteria
  */
-class Jammer : Item(Properties().stacksTo(1).rarity(Rarity.RARE)) {
+class Jammer : Item(
+    Properties().stacksTo(1).rarity(Rarity.RARE).setId(ResourceKey.create(Registries.ITEM, modLocation("jammer")))
+) {
     override fun use(
         level: Level,
         player: Player,
         interactionHand: InteractionHand
-    ): InteractionResultHolder<ItemStack> {
-        if (level.isClientSide) return InteractionResultHolder.pass(player.getItemInHand(interactionHand))
+    ): InteractionResult {
+        if (level.isClientSide) return InteractionResult.PASS
         if (interactionHand == InteractionHand.MAIN_HAND) {
             BacteriaBlockEntity.globalJamState = !BacteriaBlockEntity.globalJamState
         } else {
@@ -32,6 +36,6 @@ class Jammer : Item(Properties().stacksTo(1).rarity(Rarity.RARE)) {
             Component.literal("Jamming: ${BacteriaBlockEntity.globalJamState}, Killing: ${BacteriaBlockEntity.globalKillState}"),
             true
         )
-        return InteractionResultHolder.success(player.getItemInHand(interactionHand))
+        return InteractionResult.SUCCESS
     }
 }

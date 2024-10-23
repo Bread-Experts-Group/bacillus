@@ -1,8 +1,8 @@
 package com.ttttdoy.bacillus.util
 
-import net.minecraft.core.BlockPos
-import net.minecraft.core.SectionPos
+import net.minecraft.core.*
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty
 import net.minecraft.world.level.block.state.properties.Property
 import net.minecraft.world.level.chunk.LevelChunk
 import org.apache.logging.log4j.LogManager
+import java.util.*
 
 // THIS CLASS IS HAZARDOUS
 object General {
@@ -40,7 +41,7 @@ object General {
                     val coordY = SectionPos.blockToSectionCoord(nextPos.z)
                     if (chunk == null || chunk.pos.x != coordX || chunk.pos.z != coordY) chunk =
                         level.getChunk(coordX, coordY)
-                    val nextState = chunk.getBlockState(nextPos)
+                    val nextState = (chunk ?: return null).getBlockState(nextPos)
 
                     if (
                         !nextState.isAir && nextState.block != block &&
@@ -52,6 +53,8 @@ object General {
         }
         return null
     }
+
+    fun Optional<Holder.Reference<Block>>.getBlock() = this.get().unwrap().right().get()
 
     fun BlockState.serializeInto(tag: CompoundTag) {
         tag.putString("block", BuiltInRegistries.BLOCK.getKey(this.block).toString())
@@ -68,7 +71,9 @@ object General {
     }
 
     fun CompoundTag.deserializeBlockState(): BlockState {
-        var state = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(this.getString("block"))).defaultBlockState()
+        var state =
+            BuiltInRegistries.BLOCK.get(ResourceLocation.parse(this.getString("block"))).getBlock().defaultBlockState()
+//        var state = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(this.getString("block")))
         this.getCompound("properties").let { tag ->
             state.properties.forEach {
                 when (it) {

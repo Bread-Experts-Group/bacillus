@@ -11,12 +11,11 @@ object ModBlockEntityTypes {
     val BLOCK_ENTITY_TYPE_REGISTRY: DeferredRegister<BlockEntityType<*>> =
         DeferredRegister.create(Bacillus.MOD_ID, Registries.BLOCK_ENTITY_TYPE)
 
-    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     val BACTERIA_BLOCK_ENTITY: RegistrySupplier<BlockEntityType<BacteriaBlockEntity>> =
         BLOCK_ENTITY_TYPE_REGISTRY.register("bacteria_entity") {
-            BlockEntityType.Builder.of(
+            BlockEntityType(
                 { blockPos, blockState -> BacteriaBlockEntity(blockPos, blockState) },
-                ModBlocks.REPLACER.get().block, ModBlocks.DESTROYER.get().block
-            ).build(null)
+                setOf(ModBlocks.REPLACER.get().block, ModBlocks.DESTROYER.get().block)
+            )
         }
 }

@@ -1,9 +1,12 @@
 package com.ttttdoy.bacillus.block
 
 import com.mojang.serialization.MapCodec
+import com.ttttdoy.bacillus.Bacillus.modLocation
 import com.ttttdoy.bacillus.block.entity.BacteriaBlockEntity
 import com.ttttdoy.bacillus.registry.ModBlockEntityTypes
 import net.minecraft.core.BlockPos
+import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceKey
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
@@ -17,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.redstone.Orientation
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
@@ -35,7 +39,13 @@ import net.minecraft.world.phys.shapes.VoxelShape
  * @see BacteriaBlockEntity.grace
  * @since 1.0.0
  */
-class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).instabreak().noOcclusion()) {
+class BacteriaBlock : BaseEntityBlock(
+    Properties.ofFullCopy(Blocks.SPONGE).instabreak().noOcclusion().setId(
+        ResourceKey.create(
+            Registries.BLOCK, modLocation("bacteria")
+        )
+    )
+) {
     val codec: MapCodec<BacteriaBlock> = simpleCodec { this }
 
     init {
@@ -53,7 +63,7 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
 
     override fun newBlockEntity(blockPos: BlockPos, blockState: BlockState) = BacteriaBlockEntity(blockPos, blockState)
 
-    override fun propagatesSkylightDown(state: BlockState, level: BlockGetter, pos: BlockPos): Boolean = true
+    override fun propagatesSkylightDown(blockState: BlockState): Boolean = true
 
     override fun <T : BlockEntity> getTicker(
         level: Level,
@@ -79,8 +89,8 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         level: Level,
         blockPos: BlockPos,
         block: Block,
-        neighborPos: BlockPos,
-        moved: Boolean
+        orientation: Orientation?,
+        bl: Boolean
     ) {
         if (blockState.getValue(BlockStateProperties.ENABLED)) return
         if (!level.hasNeighborSignal(blockPos)) return
