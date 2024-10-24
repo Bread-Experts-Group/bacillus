@@ -27,7 +27,7 @@ side = "BOTH"
 [[dependencies.bacillus]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21,)"
+versionRange = "[1.21.3,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -41,7 +41,7 @@ side = "BOTH"
 [[dependencies.bacillus]]
 modId = "kotlinforforge"
 type = "required"
-versionRange = "[5.4.0,)"
+versionRange = "[5.6.0,)"
 ordering = "AFTER"
 side = "BOTH"
 
