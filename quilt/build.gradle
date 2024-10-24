@@ -1,9 +1,11 @@
 plugins {
     id 'com.github.johnrengelman.shadow'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 repositories {
     maven { url "https://maven.quiltmc.org/repository/release/" }
+    mavenCentral()
 }
 
 architectury {
@@ -37,6 +39,7 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionQuilt")) { transitive false }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 //    common(project(path: ":fabric-like", configuration: "namedElements")) { transitive false }
 //    shadowCommon(project(path: ":fabric-like", configuration: "transformProductionQuilt")) { transitive false }
 }
@@ -74,4 +77,7 @@ components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
         skip()
     }
+}
+kotlin {
+    jvmToolchain(21)
 }

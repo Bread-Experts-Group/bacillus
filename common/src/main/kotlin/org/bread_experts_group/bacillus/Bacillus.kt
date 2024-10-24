@@ -20,6 +20,12 @@ object Bacillus {
     @JvmStatic
     fun init() = Registry.registerAll()
 
+    /**
+     * Main mod client initializer.
+     */
+    @JvmStatic
+    fun initClient() = Registry.registerAllClient()
+
     fun modLocation(vararg path: String, override: Boolean = false): ResourceLocation =
         path.toMutableList().let {
             ResourceLocation.fromNamespaceAndPath(if (override) it.removeFirst() else MOD_ID, it.joinToString("/"))
