@@ -28,7 +28,7 @@
         - Trash button for voiding consumed blocks
 - [ ] Convert the everything block to an item, work on textures for said item
 - [ ] Bacteria fading to gray during it's lifetime
-- [ ] Make the patchouli book work
+- [ ] Make the patchouli book work (IT STILL DOESN'T WORK, MIGHT JUST MAKE MY OWN SCUFFED BOOK)
 - [X] Fix lighting not updating while using destroyer bacteria
 
 ## Credits

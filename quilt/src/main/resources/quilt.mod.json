@@ -6,7 +6,7 @@
     "version": "${version}",
     "metadata": {
       "name": "Bacillus",
-      "description": "A rewrite of the original Bacteria mod by TeNNoX. \n http://tennoxmods.blogspot.com/p/bacteria-mod.html \n Textures from the Bacterium mod for 1.20.1 by InEqualMeasure. \n https://www.curseforge.com/minecraft/mc-mods/bacterium",
+      "description": "A rewrite of the original Bacteria mod by TeNNoX. \n https://tennoxmods.blogspot.com/p/bacteria-mod.html \n Textures from the Bacterium mod for 1.20.1 by InEqualMeasure. \n https://www.curseforge.com/minecraft/mc-mods/bacterium",
       "contributors": {
         "Logan McLean (ttttdoy)": "Developer",
         "Miko Elbrecht (ATPStorages)": "Developer"

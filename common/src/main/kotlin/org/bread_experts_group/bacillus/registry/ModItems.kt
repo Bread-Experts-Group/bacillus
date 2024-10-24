@@ -5,6 +5,7 @@ import dev.architectury.registry.registries.RegistrySupplier
 import net.minecraft.core.registries.Registries
 import net.minecraft.world.item.Item
 import org.bread_experts_group.bacillus.Bacillus
+import org.bread_experts_group.bacillus.item.FilterItem
 import org.bread_experts_group.bacillus.item.Jammer
 import org.bread_experts_group.bacillus.item.LocalizedJammer
 import org.bread_experts_group.bacillus.util.General.setId
@@ -18,7 +19,11 @@ object ModItems {
     // todo work on filter item concept (gui and item texture)
 
     val JAMMER: RegistrySupplier<Item> = ITEM_REGISTRY.register("jammer") { Jammer() }
+
     val LOCALIZED_JAMMER: RegistrySupplier<Item> = ITEM_REGISTRY.register("localized_jammer") { LocalizedJammer() }
+
     val COMPACTED_MUST: RegistrySupplier<Item> =
         ITEM_REGISTRY.register("compacted_must") { Item(Item.Properties().setId("compacted_must")) }
+
+    val FILTER: RegistrySupplier<Item> = ITEM_REGISTRY.register("filter") { FilterItem() }
 }
