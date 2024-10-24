@@ -101,8 +101,8 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
 
     override fun codec(): MapCodec<out BaseEntityBlock> = codec
     override fun getRenderShape(blockState: BlockState): RenderShape =
-        /*if (blockState.getValue(BlockStateProperties.TRIGGERED))*/ RenderShape.INVISIBLE
-        //else RenderShape.MODEL
+        if (blockState.getValue(BlockStateProperties.TRIGGERED)) RenderShape.INVISIBLE
+        else RenderShape.MODEL
 
     override fun hasDynamicShape(): Boolean = true
 

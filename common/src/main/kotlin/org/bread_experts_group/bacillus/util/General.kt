@@ -40,7 +40,7 @@ object General {
                     val coordY = SectionPos.blockToSectionCoord(nextPos.z)
                     if (chunk == null || chunk.pos.x != coordX || chunk.pos.z != coordY) chunk =
                         level.getChunk(coordX, coordY)
-                    val nextState = chunk.getBlockState(nextPos)
+                    val nextState = (chunk ?: return null).getBlockState(nextPos)
 
                     if (
                         !nextState.isAir && nextState.block != block &&

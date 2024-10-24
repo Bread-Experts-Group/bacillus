@@ -129,7 +129,7 @@ class BacteriaBlockEntity(
         super.loadAdditional(compoundTag, provider)
     }
 
-    val germinationState =
+    private val germinationState: BlockState =
         (if (blockState.block == ModBlocks.DESTROYER.get().block) ModBlocks.DESTROYER.get().block.defaultBlockState()
         else ModBlocks.REPLACER.get().block.defaultBlockState()).setValue(BlockStateProperties.ENABLED, true)
 
