@@ -25,12 +25,6 @@ object ClientModEventBus {
 
     @SubscribeEvent
     fun onClientSetup(event: RegisterMenuScreensEvent) {
-        event.register(ModMenuTypes.FILTER.get()) { menu, inventory, title ->
-            FilterScreen(
-                menu,
-                inventory,
-                title
-            )
-        }
+        event.register(ModMenuTypes.FILTER.get()) { menu, inventory, title -> FilterScreen(menu, inventory, title) }
     }
 }

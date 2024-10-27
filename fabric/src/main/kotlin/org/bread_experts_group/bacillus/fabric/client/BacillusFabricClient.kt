@@ -19,11 +19,7 @@ class BacillusFabricClient : ClientModInitializer {
         ) { context: BlockEntityRendererProvider.Context -> BacteriaBlockRenderer(context) }
 
         MenuScreens.register(ModMenuTypes.FILTER.get()) { menu, inventory, title ->
-            FilterScreen(
-                menu,
-                inventory,
-                title
-            )
+            FilterScreen(menu, inventory, title)
         }
 
         initClient()

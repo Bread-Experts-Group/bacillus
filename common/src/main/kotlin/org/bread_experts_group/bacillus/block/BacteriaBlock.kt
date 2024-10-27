@@ -46,6 +46,12 @@ class BacteriaBlock : BaseEntityBlock(Properties.ofFullCopy(Blocks.SPONGE).insta
         )
     }
 
+    // todo look into only disabling occlusion when the consumed block shape isn't full,
+    //  should remove unnecessary rendered faces the player will never see
+    override fun isOcclusionShapeFullBlock(state: BlockState, level: BlockGetter, pos: BlockPos): Boolean {
+        return super.isOcclusionShapeFullBlock(state, level, pos)
+    }
+
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(BlockStateProperties.ENABLED, BlockStateProperties.TRIGGERED)
         super.createBlockStateDefinition(builder)
