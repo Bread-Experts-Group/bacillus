@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "R": {
-      "item": "minecraft:redstone"
-    },
-    "M": {
-      "item": "bacillus:must"
-    },
-    "I": {
-      "item": "minecraft:iron_ingot"
-    }
+    "R": "minecraft:redstone",
+    "M": "bacillus:must",
+    "I": "minecraft:iron_ingot"
   },
   "pattern": [
     "R M",

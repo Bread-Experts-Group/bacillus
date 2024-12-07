@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "item": "bacillus:compacted_must"
-    },
-    "R": {
-      "item": "minecraft:tnt"
-    }
+    "M": "bacillus:compacted_must",
+    "R": "minecraft:tnt"
   },
   "pattern": [
     " M ",
